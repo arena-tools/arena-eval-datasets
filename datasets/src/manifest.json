@@ -1,4 +1,65 @@
 {
-  "datasets": [],
-  "generatedAt": "2026-03-23T00:00:00Z"
+  "datasets": [
+    {
+      "boardId": "pixmpx",
+      "directory": "pixmpx",
+      "datasetNamePrefix": "test-run",
+      "lastUpload": {
+        "uploadedAt": "2026-03-23T22:29:54.417Z",
+        "datasets": [
+          {
+            "name": "rule",
+            "datasetName": "test-run-rule",
+            "itemCount": 10
+          },
+          {
+            "name": "fanout",
+            "datasetName": "test-run-fanout",
+            "itemCount": 10
+          },
+          {
+            "name": "e2e",
+            "datasetName": "test-run-e2e",
+            "itemCount": 12
+          },
+          {
+            "name": "explainability",
+            "datasetName": "test-run-explainability",
+            "itemCount": 108
+          }
+        ]
+      }
+    },
+    {
+      "boardId": "tida",
+      "directory": "tida",
+      "datasetNamePrefix": "test-run-2",
+      "lastUpload": {
+        "uploadedAt": "2026-03-23T22:29:56.083Z",
+        "datasets": [
+          {
+            "name": "rule",
+            "datasetName": "test-run-2-rule",
+            "itemCount": 8
+          },
+          {
+            "name": "fanout",
+            "datasetName": "test-run-2-fanout",
+            "itemCount": 8
+          },
+          {
+            "name": "e2e",
+            "datasetName": "test-run-2-e2e",
+            "itemCount": 14
+          },
+          {
+            "name": "explainability",
+            "datasetName": "test-run-2-explainability",
+            "itemCount": 73
+          }
+        ]
+      }
+    }
+  ],
+  "generatedAt": "2026-03-23T22:29:56.083Z"
 }

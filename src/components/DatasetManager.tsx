@@ -76,15 +76,9 @@ async function commitFiles(
   files: { path: string; content: string }[],
   message: string,
   branch: string = 'main',
+  maxRetries: number = 3,
 ): Promise<void> {
-  const refRes = await githubRequest(pat, 'GET', `/repos/${owner}/${repo}/git/ref/heads/${branch}`)
-  if (!refRes.ok) throw new Error(`Failed to get branch ref: ${refRes.status}`)
-  const currentSha = (refRes.data as { object: { sha: string } }).object.sha
-
-  const commitRes = await githubRequest(pat, 'GET', `/repos/${owner}/${repo}/git/commits/${currentSha}`)
-  if (!commitRes.ok) throw new Error(`Failed to get commit: ${commitRes.status}`)
-  const treeSha = (commitRes.data as { tree: { sha: string } }).tree.sha
-
+  // Create blobs once — they're content-addressed and reusable across retries
   const treeEntries = []
   for (const file of files) {
     const blobRes = await githubRequest(pat, 'POST', `/repos/${owner}/${repo}/git/blobs`, {
@@ -100,25 +94,48 @@ async function commitFiles(
     })
   }
 
-  const newTreeRes = await githubRequest(pat, 'POST', `/repos/${owner}/${repo}/git/trees`, {
-    base_tree: treeSha,
-    tree: treeEntries,
-  })
-  if (!newTreeRes.ok) throw new Error(`Failed to create tree: ${newTreeRes.status}`)
-  const newTreeSha = (newTreeRes.data as { sha: string }).sha
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    // Fetch latest branch ref
+    const refRes = await githubRequest(pat, 'GET', `/repos/${owner}/${repo}/git/ref/heads/${branch}`)
+    if (!refRes.ok) throw new Error(`Failed to get branch ref: ${refRes.status}`)
+    const currentSha = (refRes.data as { object: { sha: string } }).object.sha
 
-  const newCommitRes = await githubRequest(pat, 'POST', `/repos/${owner}/${repo}/git/commits`, {
-    message,
-    tree: newTreeSha,
-    parents: [currentSha],
-  })
-  if (!newCommitRes.ok) throw new Error(`Failed to create commit: ${newCommitRes.status}`)
-  const newCommitSha = (newCommitRes.data as { sha: string }).sha
+    const commitRes = await githubRequest(pat, 'GET', `/repos/${owner}/${repo}/git/commits/${currentSha}`)
+    if (!commitRes.ok) throw new Error(`Failed to get commit: ${commitRes.status}`)
+    const treeSha = (commitRes.data as { tree: { sha: string } }).tree.sha
 
-  const updateRes = await githubRequest(pat, 'PATCH', `/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
-    sha: newCommitSha,
-  })
-  if (!updateRes.ok) throw new Error(`Failed to update branch: ${updateRes.status}`)
+    // Create tree and commit on top of latest
+    const newTreeRes = await githubRequest(pat, 'POST', `/repos/${owner}/${repo}/git/trees`, {
+      base_tree: treeSha,
+      tree: treeEntries,
+    })
+    if (!newTreeRes.ok) throw new Error(`Failed to create tree: ${newTreeRes.status}`)
+    const newTreeSha = (newTreeRes.data as { sha: string }).sha
+
+    const newCommitRes = await githubRequest(pat, 'POST', `/repos/${owner}/${repo}/git/commits`, {
+      message,
+      tree: newTreeSha,
+      parents: [currentSha],
+    })
+    if (!newCommitRes.ok) throw new Error(`Failed to create commit: ${newCommitRes.status}`)
+    const newCommitSha = (newCommitRes.data as { sha: string }).sha
+
+    // Try to fast-forward the branch
+    const updateRes = await githubRequest(pat, 'PATCH', `/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
+      sha: newCommitSha,
+    })
+
+    if (updateRes.ok) return // success
+
+    // Retry on non-fast-forward (branch moved between read and update)
+    const errMsg = (updateRes.data as { message?: string })?.message || ''
+    if (updateRes.status === 422 && errMsg.includes('not a fast forward') && attempt < maxRetries - 1) {
+      console.warn(`Branch moved during commit (attempt ${attempt + 1}/${maxRetries}), retrying...`)
+      continue
+    }
+
+    throw new Error(`Failed to update branch: ${updateRes.status} ${errMsg}`)
+  }
 }
 
 async function triggerWorkflowDispatch(

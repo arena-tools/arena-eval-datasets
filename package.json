@@ -1,0 +1,16 @@
+{
+  "name": "arena-eval-datasets",
+  "version": "1.0.0",
+  "description": "Git-driven eval dataset management for Langfuse — SRC eval datasets",
+  "type": "module",
+  "scripts": {
+    "upload": "tsx scripts/upload-datasets.ts",
+    "upload:all": "tsx scripts/upload-datasets.ts --all",
+    "upload:changed": "tsx scripts/upload-datasets.ts --changed",
+    "upload:dry-run": "tsx scripts/upload-datasets.ts --all --dry-run"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.2.2"
+  }
+}

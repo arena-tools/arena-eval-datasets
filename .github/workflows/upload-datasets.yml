@@ -34,6 +34,15 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Debug - test Langfuse connectivity
+        env:
+          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+        run: |
+          echo "Resolving hostname..."
+          echo "$LANGFUSE_BASE_URL" | sed 's|https\?://||' | cut -d/ -f1 | xargs nslookup || true
+          echo "Curling Langfuse..."
+          curl -v --max-time 10 "$LANGFUSE_BASE_URL/api/public/v2/datasets" 2>&1 || true
+
       - name: Install dependencies
         run: npm ci
 

@@ -18,7 +18,7 @@ on:
 
 jobs:
   upload:
-    runs-on: self-hosted-atlas
+    runs-on: self-hosted-runner
     permissions:
       contents: write
 

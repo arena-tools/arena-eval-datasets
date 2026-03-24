@@ -87,14 +87,19 @@ async function langfuseRequest(
   const authHeader = 'Basic ' + Buffer.from(`${config.publicKey}:${config.secretKey}`).toString('base64')
   const url = `${config.baseUrl}${endpoint}`
 
-  const res = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authHeader,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  })
+  let res: Response
+  try {
+    res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    })
+  } catch (err) {
+    throw new Error(`Network error calling ${method} ${url}: ${err instanceof Error ? err.message : err}`)
+  }
 
   let data: unknown = null
   try {

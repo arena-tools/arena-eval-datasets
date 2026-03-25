@@ -1,26 +1,27 @@
 {
-  "uploadedAt": "2026-03-25T20:42:16.287Z",
+  "uploadedAt": "2026-03-25T21:05:37.933Z",
   "boardId": "stm32",
   "mode": "create_new",
+  "commitHash": "078fd84",
   "datasets": [
     {
       "name": "rule",
-      "datasetName": "test-test-rule",
+      "datasetName": "test-test-rule-078fd84",
       "itemCount": 11
     },
     {
       "name": "fanout",
-      "datasetName": "test-test-fanout",
+      "datasetName": "test-test-fanout-078fd84",
       "itemCount": 11
     },
     {
       "name": "e2e",
-      "datasetName": "test-test-e2e",
+      "datasetName": "test-test-e2e-078fd84",
       "itemCount": 17
     },
     {
       "name": "explainability",
-      "datasetName": "test-test-explainability",
+      "datasetName": "test-test-explainability-078fd84",
       "itemCount": 111
     }
   ],

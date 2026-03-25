@@ -174,27 +174,6 @@ async function getLatestWorkflowRun(
 }
 
 // ---------------------------------------------------------------------------
-// Langfuse API helpers
-// ---------------------------------------------------------------------------
-
-async function langfuseDeleteDataset(
-  baseUrl: string,
-  publicKey: string,
-  secretKey: string,
-  datasetName: string,
-): Promise<{ ok: boolean; status: number }> {
-  const authHeader = 'Basic ' + btoa(`${publicKey}:${secretKey}`)
-  const res = await fetch(`${baseUrl}/api/public/v2/datasets/${encodeURIComponent(datasetName)}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authHeader,
-    },
-  })
-  return { ok: res.ok, status: res.status }
-}
-
-// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -202,11 +181,6 @@ export default function DatasetManager() {
   // Auth — GitHub
   const [pat, setPat] = useState(() => localStorage.getItem('github_pat') || '')
   const [patValid, setPatValid] = useState(false)
-
-  // Auth — Langfuse
-  const [lfBaseUrl, setLfBaseUrl] = useState(() => localStorage.getItem('langfuse_base_url') || '')
-  const [lfPublicKey, setLfPublicKey] = useState(() => localStorage.getItem('langfuse_public_key') || '')
-  const [lfSecretKey, setLfSecretKey] = useState(() => localStorage.getItem('langfuse_secret_key') || '')
 
   // Tabs
   const [activeTab, setActiveTab] = useState<'datasets' | 'upload'>('datasets')
@@ -248,13 +222,6 @@ export default function DatasetManager() {
 
   // GitHub config
   const { owner, repo } = getGitHubConfig()
-
-  const langfuseConfigured = lfBaseUrl && lfPublicKey && lfSecretKey
-
-  // ── Persist Langfuse creds ──
-  useEffect(() => { localStorage.setItem('langfuse_base_url', lfBaseUrl) }, [lfBaseUrl])
-  useEffect(() => { localStorage.setItem('langfuse_public_key', lfPublicKey) }, [lfPublicKey])
-  useEffect(() => { localStorage.setItem('langfuse_secret_key', lfSecretKey) }, [lfSecretKey])
 
   // ── Load manifest ──
   useEffect(() => {
@@ -312,33 +279,34 @@ export default function DatasetManager() {
     })
   }
 
-  // ── Delete datasets from Langfuse ──
+  // ── Delete datasets via GitHub Actions workflow ──
   async function handleDeleteConfirm() {
-    if (!deleteTarget || !langfuseConfigured) return
+    if (!deleteTarget || !pat || !patValid || !owner || !repo) return
 
     setDeleting(true)
-    const { entry } = deleteTarget
-    const errors: string[] = []
+    const { entry, prefix } = deleteTarget
+    const datasetNames = entry.datasets.map(d => d.datasetName).join(',')
 
-    for (const ds of entry.datasets) {
-      try {
-        const res = await langfuseDeleteDataset(lfBaseUrl, lfPublicKey, lfSecretKey, ds.datasetName)
-        if (!res.ok && res.status !== 404) {
-          errors.push(`${ds.datasetName}: HTTP ${res.status}`)
-        }
-      } catch (err) {
-        errors.push(`${ds.datasetName}: ${err instanceof Error ? err.message : 'Network error'}`)
+    try {
+      const res = await githubRequest(
+        pat,
+        'POST',
+        `/repos/${owner}/${repo}/actions/workflows/delete-datasets.yml/dispatches`,
+        {
+          ref: 'main',
+          inputs: { dataset_names: datasetNames },
+        },
+      )
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${JSON.stringify(res.data)}`)
       }
+      setStatusMsg({ type: 'info', text: `Delete workflow triggered for ${prefix} @ ${entry.commitHash}. Check Actions for progress.` })
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: `Failed to trigger delete: ${err instanceof Error ? err.message : 'Unknown error'}` })
     }
 
     setDeleting(false)
     setDeleteTarget(null)
-
-    if (errors.length > 0) {
-      setStatusMsg({ type: 'error', text: `Failed to delete some datasets: ${errors.join('; ')}` })
-    } else {
-      setStatusMsg({ type: 'success', text: `Deleted ${entry.datasets.length} datasets for ${deleteTarget.prefix} @ ${entry.commitHash}` })
-    }
   }
 
   // ── File handling ──
@@ -518,35 +486,6 @@ export default function DatasetManager() {
         )}
       </div>
 
-      {/* Langfuse auth bar */}
-      <div className="dm-auth-bar">
-        <label>Langfuse:</label>
-        <input
-          type="text"
-          value={lfBaseUrl}
-          onChange={e => setLfBaseUrl(e.target.value)}
-          placeholder="Base URL"
-          style={{ flex: '0 1 200px' }}
-        />
-        <input
-          type="password"
-          value={lfPublicKey}
-          onChange={e => setLfPublicKey(e.target.value)}
-          placeholder="Public Key"
-          style={{ flex: '0 1 160px' }}
-        />
-        <input
-          type="password"
-          value={lfSecretKey}
-          onChange={e => setLfSecretKey(e.target.value)}
-          placeholder="Secret Key"
-          style={{ flex: '0 1 160px' }}
-        />
-        <span className={`dm-auth-status ${langfuseConfigured ? 'connected' : 'disconnected'}`}>
-          {langfuseConfigured ? 'Configured' : 'Not set'}
-        </span>
-      </div>
-
       {/* Tabs */}
       <div className="dm-tabs">
         <button className={`dm-tab ${activeTab === 'datasets' ? 'active' : ''}`} onClick={() => setActiveTab('datasets')}>
@@ -647,7 +586,7 @@ export default function DatasetManager() {
                                 ))}
                               </span>
                               <span className="dm-version-actions">
-                                {langfuseConfigured && h.datasets.length > 0 && (
+                                {patValid && h.datasets.length > 0 && (
                                   <button
                                     className="dm-btn dm-btn-danger"
                                     onClick={() => setDeleteTarget({

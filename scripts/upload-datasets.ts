@@ -2,7 +2,7 @@
 /**
  * SRC Eval Dataset Upload Script
  *
- * Reads SRC eval dataset CSVs from datasets/src/{boardId}/, converts them using
+ * Reads SRC eval dataset CSVs from datasets/schematic_rule_check/{boardId}/, converts them using
  * the shared srcDatasetConverters, and uploads to Langfuse via API.
  *
  * Usage:
@@ -67,7 +67,7 @@ interface Manifest {
 // Config
 // ---------------------------------------------------------------------------
 
-const DATASETS_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'src')
+const DATASETS_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'schematic_rule_check')
 
 function getLangfuseConfig() {
   const baseUrl = process.env.LANGFUSE_BASE_URL || 'https://cloud.langfuse.com'
@@ -327,7 +327,7 @@ async function main() {
   if (boardArg) {
     // Single board
     if (!fs.existsSync(path.join(DATASETS_DIR, boardArg, 'metadata.json'))) {
-      console.error(`Error: Board directory not found: datasets/src/${boardArg}/metadata.json`)
+      console.error(`Error: Board directory not found: datasets/schematic_rule_check/${boardArg}/metadata.json`)
       process.exit(1)
     }
     boardDirs = [boardArg]
@@ -335,13 +335,13 @@ async function main() {
     // Detect changed boards from git
     const { execSync } = await import('child_process')
     try {
-      const diffOutput = execSync('git diff --name-only HEAD~1 HEAD -- datasets/src/', { encoding: 'utf-8' })
+      const diffOutput = execSync('git diff --name-only HEAD~1 HEAD -- datasets/schematic_rule_check/', { encoding: 'utf-8' })
       const changedDirs = new Set<string>()
       for (const file of diffOutput.trim().split('\n')) {
         if (!file) continue
-        // Extract board dir: datasets/src/{boardDir}/...
+        // Extract board dir: datasets/schematic_rule_check/{boardDir}/...
         const parts = file.split('/')
-        if (parts.length >= 3 && parts[0] === 'datasets' && parts[1] === 'src') {
+        if (parts.length >= 3 && parts[0] === 'datasets' && parts[1] === 'schematic_rule_check') {
           const boardDir = parts[2]
           if (fs.existsSync(path.join(DATASETS_DIR, boardDir, 'metadata.json'))) {
             changedDirs.add(boardDir)
@@ -362,7 +362,7 @@ async function main() {
   } else if (all) {
     boardDirs = listBoardDirs()
     if (boardDirs.length === 0) {
-      console.log('No board directories found in datasets/src/')
+      console.log('No board directories found in datasets/schematic_rule_check/')
       return
     }
     console.log(`Processing all ${boardDirs.length} board(s): ${boardDirs.join(', ')}`)

@@ -223,12 +223,12 @@ export default function DatasetManager() {
   async function loadManifest() {
     setManifestLoading(true)
     try {
-      const res = await fetch(`${import.meta.env.BASE_URL}datasets/src/manifest.json`)
+      const res = await fetch(`${import.meta.env.BASE_URL}datasets/schematic_rule_check/manifest.json`)
       if (res.ok) {
         setManifest(await res.json())
       } else {
         if (pat && owner && repo) {
-          const ghRes = await githubRequest(pat, 'GET', `/repos/${owner}/${repo}/contents/datasets/src/manifest.json`)
+          const ghRes = await githubRequest(pat, 'GET', `/repos/${owner}/${repo}/contents/datasets/schematic_rule_check/manifest.json`)
           if (ghRes.ok) {
             const content = atob((ghRes.data as { content: string }).content.replace(/\n/g, ''))
             setManifest(JSON.parse(content))
@@ -351,8 +351,8 @@ export default function DatasetManager() {
 
       const dirName = boardId.trim()
       const files = [
-        { path: `datasets/src/${dirName}/src-eval.csv`, content: csvContent },
-        { path: `datasets/src/${dirName}/metadata.json`, content: JSON.stringify(metadata, null, 2) + '\n' },
+        { path: `datasets/schematic_rule_check/${dirName}/src-eval.csv`, content: csvContent },
+        { path: `datasets/schematic_rule_check/${dirName}/metadata.json`, content: JSON.stringify(metadata, null, 2) + '\n' },
       ]
 
       await commitFiles(pat, owner, repo, files, `feat: add SRC eval dataset for board ${boardId.trim()}`)

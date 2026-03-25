@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'datasets/src/**'
+      - 'datasets/schematic_rule_check/**'
   workflow_dispatch:
     inputs:
       board_id:
@@ -68,7 +68,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add datasets/src/manifest.json datasets/src/*/last-upload.json
+          git add datasets/schematic_rule_check/manifest.json datasets/schematic_rule_check/*/last-upload.json
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else

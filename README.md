@@ -11,7 +11,7 @@ cp .env.example .env  # fill in your Langfuse credentials
 
 ## Adding a dataset
 
-1. Create a directory under `datasets/src/{board-id}/`
+1. Create a directory under `datasets/schematic_rule_check/{board-id}/`
 2. Add two files:
    - `src-eval.csv` — the source SRC evaluation CSV
    - `metadata.json` — board configuration

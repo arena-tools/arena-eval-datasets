@@ -9,8 +9,8 @@ export default defineConfig({
     {
       name: 'copy-dataset-manifest',
       writeBundle() {
-        const manifestSrc = path.join(__dirname, 'datasets', 'src', 'manifest.json')
-        const destDir = path.join(__dirname, 'dist', 'datasets', 'src')
+        const manifestSrc = path.join(__dirname, 'datasets', 'schematic_rule_check', 'manifest.json')
+        const destDir = path.join(__dirname, 'dist', 'datasets', 'schematic_rule_check')
         if (fs.existsSync(manifestSrc)) {
           fs.mkdirSync(destDir, { recursive: true })
           fs.copyFileSync(manifestSrc, path.join(destDir, 'manifest.json'))

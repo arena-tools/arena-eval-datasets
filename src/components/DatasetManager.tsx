@@ -14,6 +14,7 @@ interface ManifestEntry {
   author?: string
   lastUpload?: {
     uploadedAt: string
+    commitHash: string
     datasets: { name: string; datasetName: string; itemCount: number }[]
   }
 }
@@ -485,7 +486,8 @@ export default function DatasetManager() {
                         {entry.author && <span>by {entry.author}</span>}
                         {entry.lastUpload && (
                           <span>
-                            Last upload: {new Date(entry.lastUpload.uploadedAt).toLocaleDateString()} —{' '}
+                            Last upload: {new Date(entry.lastUpload.uploadedAt).toLocaleDateString()}
+                            {entry.lastUpload.commitHash && ` (${entry.lastUpload.commitHash})`} —{' '}
                             {entry.lastUpload.datasets.map(d => `${d.name}: ${d.itemCount}`).join(', ')} items
                           </span>
                         )}
@@ -625,10 +627,10 @@ export default function DatasetManager() {
                       <div key={ds.name} className="dm-preview-card">
                         <div className="dm-preview-card-title">
                           {ds.name} {uploadMode === 'create_new'
-                            ? `→ ${datasetPrefix}-${ds.name}`
+                            ? `→ ${datasetPrefix}-${ds.name}-{hash}`
                             : existingNames[ds.name as keyof typeof existingNames]
                               ? `→ ${existingNames[ds.name as keyof typeof existingNames]}`
-                              : `→ ${datasetPrefix}-${ds.name}`
+                              : `→ ${datasetPrefix}-${ds.name}-{hash}`
                           }
                         </div>
                         <div className="dm-preview-card-count">{ds.rows.length} items</div>

@@ -35,6 +35,7 @@ interface UploadReceipt {
   uploadedAt: string
   boardId: string
   mode: string
+  commitHash: string
   datasets: {
     name: string
     datasetName: string
@@ -52,6 +53,7 @@ interface ManifestEntry {
   author?: string
   lastUpload?: {
     uploadedAt: string
+    commitHash: string
     datasets: { name: string; datasetName: string; itemCount: number }[]
   }
 }
@@ -134,6 +136,16 @@ async function uploadDatasetItem(
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Get the short git commit hash of HEAD */
+async function getCommitHash(): Promise<string> {
+  const { execSync } = await import('child_process')
+  return execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim()
+}
+
+// ---------------------------------------------------------------------------
 // Core logic
 // ---------------------------------------------------------------------------
 
@@ -158,26 +170,27 @@ function readCsv(boardDir: string): string {
   return fs.readFileSync(csvPath, 'utf-8')
 }
 
-function getDatasetName(metadata: Metadata, output: DatasetOutput): string {
+function getDatasetName(metadata: Metadata, output: DatasetOutput, commitHash: string): string {
   if (metadata.mode === 'add_to_existing' && metadata.existingDatasetNames?.[output.name]) {
     return metadata.existingDatasetNames[output.name]
   }
-  return `${metadata.datasetNamePrefix}-${output.name}`
+  return `${metadata.datasetNamePrefix}-${output.name}-${commitHash}`
 }
 
-async function processBoard(boardDir: string, dryRun: boolean): Promise<UploadReceipt> {
+async function processBoard(boardDir: string, dryRun: boolean, commitHash: string): Promise<UploadReceipt> {
   const metadata = readMetadata(boardDir)
   const csvText = readCsv(boardDir)
 
   console.log(`\n--- Board: ${metadata.boardId} (${boardDir}) ---`)
   console.log(`  Prefix: ${metadata.datasetNamePrefix}`)
   console.log(`  Mode:   ${metadata.mode || 'create_new'}`)
+  console.log(`  Commit: ${commitHash}`)
 
   const outputs = convertAll(csvText, metadata.boardId)
   const receiptDatasets: UploadReceipt['datasets'] = []
 
   for (const output of outputs) {
-    const datasetName = getDatasetName(metadata, output)
+    const datasetName = getDatasetName(metadata, output, commitHash)
     console.log(`  [${output.name}] ${output.rows.length} items -> "${datasetName}"`)
 
     if (!dryRun) {
@@ -212,6 +225,7 @@ async function processBoard(boardDir: string, dryRun: boolean): Promise<UploadRe
     uploadedAt: new Date().toISOString(),
     boardId: metadata.boardId,
     mode: metadata.mode || 'create_new',
+    commitHash,
     datasets: receiptDatasets,
     success: true,
   }
@@ -245,6 +259,7 @@ function updateManifest(): void {
         const receipt: UploadReceipt = JSON.parse(fs.readFileSync(receiptPath, 'utf-8'))
         entry.lastUpload = {
           uploadedAt: receipt.uploadedAt,
+          commitHash: receipt.commitHash,
           datasets: receipt.datasets,
         }
       } catch {
@@ -362,10 +377,13 @@ Options:
     process.exit(0)
   }
 
+  const commitHash = await getCommitHash()
+  console.log(`Commit: ${commitHash}`)
+
   let hasErrors = false
   for (const dir of boardDirs) {
     try {
-      await processBoard(dir, dryRun)
+      await processBoard(dir, dryRun, commitHash)
     } catch (err) {
       hasErrors = true
       console.error(`\nERROR processing ${dir}:`, err instanceof Error ? err.message : err)
@@ -376,6 +394,7 @@ Options:
           uploadedAt: new Date().toISOString(),
           boardId: dir,
           mode: 'unknown',
+          commitHash,
           datasets: [],
           success: false,
           error: err instanceof Error ? err.message : String(err),

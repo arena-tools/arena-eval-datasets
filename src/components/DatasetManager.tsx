@@ -189,9 +189,6 @@ export default function DatasetManager() {
   const [manifest, setManifest] = useState<Manifest | null>(null)
   const [manifestLoading, setManifestLoading] = useState(true)
 
-  // Expanded boards (to show version list)
-  const [expandedBoards, setExpandedBoards] = useState<Set<string>>(new Set())
-
   // Upload form
   const [file, setFile] = useState<File | null>(null)
   const [boardId, setBoardId] = useState('')
@@ -258,16 +255,6 @@ export default function DatasetManager() {
     })()
     return () => { cancelled = true }
   }, [pat])
-
-  // ── Toggle board expansion ──
-  function toggleBoard(directory: string) {
-    setExpandedBoards(prev => {
-      const next = new Set(prev)
-      if (next.has(directory)) next.delete(directory)
-      else next.add(directory)
-      return next
-    })
-  }
 
   // ── File handling ──
   const acceptFile = useCallback((f: File) => {
@@ -475,68 +462,37 @@ export default function DatasetManager() {
               <div className="dm-dataset-list">
                 {manifest.datasets.map(entry => {
                   const history = entry.uploadHistory || []
-                  const isExpanded = expandedBoards.has(entry.directory)
+                  const lastUpload = history.length > 0 ? history[history.length - 1] : null
 
                   return (
-                    <div key={entry.directory} className="dm-dataset-card">
-                      <div className="dm-dataset-row" onClick={() => history.length > 0 && toggleBoard(entry.directory)} style={{ cursor: history.length > 0 ? 'pointer' : 'default' }}>
-                        <div className="dm-dataset-info">
-                          <div className="dm-dataset-title">
-                            {history.length > 0 && (
-                              <span className="dm-expand-icon">{isExpanded ? '\u25BC' : '\u25B6'}</span>
-                            )}
-                            {entry.boardId}
-                          </div>
-                          <div className="dm-dataset-meta">
-                            <span>Prefix: {entry.datasetNamePrefix}</span>
-                            {entry.description && <span>{entry.description}</span>}
-                            {entry.author && <span>by {entry.author}</span>}
-                            <span>{history.length} version{history.length !== 1 ? 's' : ''}</span>
-                          </div>
-                        </div>
-                        <div className="dm-dataset-status">
-                          <span className={`dm-status-badge ${history.length > 0 ? 'success' : 'never'}`}>
-                            {history.length > 0 ? 'Uploaded' : 'Never uploaded'}
-                          </span>
-                          {patValid && (
-                            <button
-                              className="dm-btn dm-btn-secondary"
-                              onClick={e => { e.stopPropagation(); handleReUpload(entry.directory) }}
-                            >
-                              Re-upload
-                            </button>
+                    <div key={entry.directory} className="dm-dataset-row">
+                      <div className="dm-dataset-info">
+                        <div className="dm-dataset-title">{entry.boardId}</div>
+                        <div className="dm-dataset-meta">
+                          <span>Prefix: {entry.datasetNamePrefix}</span>
+                          {entry.description && <span>{entry.description}</span>}
+                          {entry.author && <span>by {entry.author}</span>}
+                          {lastUpload && (
+                            <span>
+                              Last upload: {new Date(lastUpload.uploadedAt).toLocaleDateString()} —{' '}
+                              {lastUpload.datasets.map(d => `${d.name}: ${d.itemCount}`).join(', ')} items
+                            </span>
                           )}
                         </div>
                       </div>
-
-                      {/* Version history */}
-                      {isExpanded && history.length > 0 && (
-                        <div className="dm-version-list">
-                          <div className="dm-version-header">
-                            <span>Commit</span>
-                            <span>Uploaded</span>
-                            <span>Datasets</span>
-                          </div>
-                          {[...history].reverse().map((h, i) => (
-                            <div key={`${h.commitHash}-${i}`} className="dm-version-row">
-                              <span className="dm-version-hash">
-                                <code>{h.commitHash}</code>
-                              </span>
-                              <span className="dm-version-date">
-                                {new Date(h.uploadedAt).toLocaleDateString()}{' '}
-                                {new Date(h.uploadedAt).toLocaleTimeString()}
-                              </span>
-                              <span className="dm-version-datasets">
-                                {h.datasets.map(d => (
-                                  <span key={d.datasetName} className="dm-version-ds-tag" title={d.datasetName}>
-                                    {d.name}: {d.itemCount}
-                                  </span>
-                                ))}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      <div className="dm-dataset-status">
+                        <span className={`dm-status-badge ${lastUpload ? 'success' : 'never'}`}>
+                          {lastUpload ? 'Uploaded' : 'Never uploaded'}
+                        </span>
+                        {patValid && (
+                          <button
+                            className="dm-btn dm-btn-secondary"
+                            onClick={() => handleReUpload(entry.directory)}
+                          >
+                            Re-upload
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )
                 })}

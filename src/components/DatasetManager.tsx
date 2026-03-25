@@ -195,8 +195,8 @@ export default function DatasetManager() {
   // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<{
     boardId: string
-    entry: UploadHistoryEntry
     prefix: string
+    datasetNames: string[]
   } | null>(null)
   const [deleting, setDeleting] = useState(false)
 
@@ -205,8 +205,6 @@ export default function DatasetManager() {
   const [boardId, setBoardId] = useState('')
   const [datasetPrefix, setDatasetPrefix] = useState('')
   const [description, setDescription] = useState('')
-  const [uploadMode, setUploadMode] = useState<'create_new' | 'add_to_existing'>('create_new')
-  const [existingNames, setExistingNames] = useState({ rule: '', fanout: '', e2e: '', explainability: '' })
   const [dragActive, setDragActive] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -279,13 +277,12 @@ export default function DatasetManager() {
     })
   }
 
-  // ── Delete datasets via GitHub Actions workflow ──
+  // ── Delete dataset items via GitHub Actions workflow ──
   async function handleDeleteConfirm() {
     if (!deleteTarget || !pat || !patValid || !owner || !repo) return
 
     setDeleting(true)
-    const { entry, prefix } = deleteTarget
-    const datasetNames = entry.datasets.map(d => d.datasetName).join(',')
+    const { prefix, datasetNames } = deleteTarget
 
     try {
       const res = await githubRequest(
@@ -294,13 +291,13 @@ export default function DatasetManager() {
         `/repos/${owner}/${repo}/actions/workflows/delete-datasets.yml/dispatches`,
         {
           ref: 'main',
-          inputs: { dataset_names: datasetNames },
+          inputs: { dataset_names: datasetNames.join(',') },
         },
       )
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: ${JSON.stringify(res.data)}`)
       }
-      setStatusMsg({ type: 'info', text: `Delete workflow triggered for ${prefix} @ ${entry.commitHash}. Check Actions for progress.` })
+      setStatusMsg({ type: 'info', text: `Delete workflow triggered for ${prefix}. Check Actions for progress.` })
     } catch (err) {
       setStatusMsg({ type: 'error', text: `Failed to trigger delete: ${err instanceof Error ? err.message : 'Unknown error'}` })
     }
@@ -384,17 +381,6 @@ export default function DatasetManager() {
         datasetNamePrefix: datasetPrefix.trim(),
         description: description.trim() || undefined,
         createdAt: new Date().toISOString(),
-        mode: uploadMode,
-      }
-
-      if (uploadMode === 'add_to_existing') {
-        const names: Record<string, string> = {}
-        for (const [key, val] of Object.entries(existingNames)) {
-          if (val.trim()) names[key] = val.trim()
-        }
-        if (Object.keys(names).length > 0) {
-          metadata.existingDatasetNames = names
-        }
       }
 
       const dirName = boardId.trim()
@@ -550,12 +536,31 @@ export default function DatasetManager() {
                             {history.length > 0 ? 'Uploaded' : 'Never uploaded'}
                           </span>
                           {patValid && (
-                            <button
-                              className="dm-btn dm-btn-secondary"
-                              onClick={e => { e.stopPropagation(); handleReUpload(entry.directory) }}
-                            >
-                              Re-upload
-                            </button>
+                            <>
+                              <button
+                                className="dm-btn dm-btn-secondary"
+                                onClick={e => { e.stopPropagation(); handleReUpload(entry.directory) }}
+                              >
+                                Re-upload
+                              </button>
+                              {history.length > 0 && (
+                                <button
+                                  className="dm-btn dm-btn-danger"
+                                  onClick={e => {
+                                    e.stopPropagation()
+                                    setDeleteTarget({
+                                      boardId: entry.boardId,
+                                      prefix: entry.datasetNamePrefix,
+                                      datasetNames: ['rule', 'fanout', 'e2e', 'explainability'].map(
+                                        t => `${entry.datasetNamePrefix}-${t}`
+                                      ),
+                                    })
+                                  }}
+                                >
+                                  Delete Items
+                                </button>
+                              )}
+                            </>
                           )}
                         </div>
                       </div>
@@ -567,7 +572,6 @@ export default function DatasetManager() {
                             <span>Commit</span>
                             <span>Uploaded</span>
                             <span>Datasets</span>
-                            <span></span>
                           </div>
                           {[...history].reverse().map((h, i) => (
                             <div key={`${h.commitHash}-${i}`} className="dm-version-row">
@@ -584,20 +588,6 @@ export default function DatasetManager() {
                                     {d.name}: {d.itemCount}
                                   </span>
                                 ))}
-                              </span>
-                              <span className="dm-version-actions">
-                                {patValid && h.datasets.length > 0 && (
-                                  <button
-                                    className="dm-btn dm-btn-danger"
-                                    onClick={() => setDeleteTarget({
-                                      boardId: entry.boardId,
-                                      entry: h,
-                                      prefix: entry.datasetNamePrefix,
-                                    })}
-                                  >
-                                    Delete
-                                  </button>
-                                )}
                               </span>
                             </div>
                           ))}
@@ -677,44 +667,6 @@ export default function DatasetManager() {
                 />
               </div>
 
-              {/* Upload Mode */}
-              <div className="dm-form-group">
-                <label>Upload Mode</label>
-                <div className="dm-mode-toggle">
-                  <button
-                    className={`dm-mode-btn ${uploadMode === 'create_new' ? 'active' : ''}`}
-                    onClick={() => setUploadMode('create_new')}
-                  >
-                    Create New
-                  </button>
-                  <button
-                    className={`dm-mode-btn ${uploadMode === 'add_to_existing' ? 'active' : ''}`}
-                    onClick={() => setUploadMode('add_to_existing')}
-                  >
-                    Add to Existing
-                  </button>
-                </div>
-              </div>
-
-              {/* Existing dataset names (for add_to_existing mode) */}
-              {uploadMode === 'add_to_existing' && (
-                <div className="dm-form-group">
-                  <label>Existing Dataset Names</label>
-                  {(['rule', 'fanout', 'e2e', 'explainability'] as const).map(key => (
-                    <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, width: '90px', color: '#495057' }}>{key}:</span>
-                      <input
-                        type="text"
-                        value={existingNames[key]}
-                        onChange={e => setExistingNames(prev => ({ ...prev, [key]: e.target.value }))}
-                        placeholder={`e.g. ${datasetPrefix || 'prefix'}-${key}`}
-                        style={{ flex: 1 }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-
               {/* Preview */}
               {previewError && <div className="dm-status-msg error">{previewError}</div>}
               {preview && (
@@ -724,12 +676,7 @@ export default function DatasetManager() {
                     {preview.map(ds => (
                       <div key={ds.name} className="dm-preview-card">
                         <div className="dm-preview-card-title">
-                          {ds.name} {uploadMode === 'create_new'
-                            ? `\u2192 ${datasetPrefix}-${ds.name}-{hash}`
-                            : existingNames[ds.name as keyof typeof existingNames]
-                              ? `\u2192 ${existingNames[ds.name as keyof typeof existingNames]}`
-                              : `\u2192 ${datasetPrefix}-${ds.name}-{hash}`
-                          }
+                          {ds.name} {'\u2192'} {datasetPrefix}-{ds.name}
                         </div>
                         <div className="dm-preview-card-count">{ds.rows.length} items</div>
                       </div>
@@ -760,16 +707,15 @@ export default function DatasetManager() {
       {deleteTarget && (
         <div className="dm-modal-overlay" onClick={() => !deleting && setDeleteTarget(null)}>
           <div className="dm-modal" onClick={e => e.stopPropagation()}>
-            <h3>Delete datasets?</h3>
+            <h3>Delete all dataset items?</h3>
             <p>
-              This will permanently delete all 4 Langfuse datasets for{' '}
-              <strong>{deleteTarget.prefix}</strong> @ <code>{deleteTarget.entry.commitHash}</code>.
+              This will delete all items from the 4 Langfuse datasets for{' '}
+              <strong>{deleteTarget.prefix}</strong>. The empty dataset shells will remain.
             </p>
             <div className="dm-modal-dataset-list">
-              {deleteTarget.entry.datasets.map(ds => (
-                <div key={ds.datasetName} className="dm-modal-dataset-item">
-                  <code>{ds.datasetName}</code>
-                  <span className="dm-modal-item-count">{ds.itemCount} items</span>
+              {deleteTarget.datasetNames.map(name => (
+                <div key={name} className="dm-modal-dataset-item">
+                  <code>{name}</code>
                 </div>
               ))}
             </div>

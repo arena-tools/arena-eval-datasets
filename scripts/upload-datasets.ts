@@ -26,15 +26,11 @@ interface Metadata {
   description?: string
   author?: string
   createdAt?: string
-  langfuseProject?: string
-  mode?: 'create_new' | 'add_to_existing'
-  existingDatasetNames?: Record<string, string>
 }
 
 interface UploadReceipt {
   uploadedAt: string
   boardId: string
-  mode: string
   commitHash: string
   datasets: {
     name: string
@@ -137,6 +133,39 @@ async function uploadDatasetItem(
   }
 }
 
+async function listDatasetItemIds(datasetName: string): Promise<string[]> {
+  const ids: string[] = []
+  let page = 1
+  while (true) {
+    const res = await langfuseRequest(
+      'GET',
+      `/api/public/dataset-items?datasetName=${encodeURIComponent(datasetName)}&page=${page}&limit=50`,
+    )
+    if (!res.ok) {
+      if (res.status === 404) return ids
+      throw new Error(`Failed to list items for "${datasetName}": HTTP ${res.status}`)
+    }
+    const body = res.data as { data: { id: string }[]; meta: { page: number; totalPages: number } }
+    for (const item of body.data) ids.push(item.id)
+    if (page >= body.meta.totalPages) break
+    page++
+  }
+  return ids
+}
+
+async function deleteDatasetItem(itemId: string): Promise<void> {
+  const res = await langfuseRequest('DELETE', `/api/public/dataset-items/${itemId}`)
+  if (!res.ok && res.status !== 404) {
+    throw new Error(`Failed to delete item ${itemId}: HTTP ${res.status}`)
+  }
+}
+
+async function clearDatasetItems(datasetName: string): Promise<number> {
+  const itemIds = await listDatasetItemIds(datasetName)
+  for (const id of itemIds) await deleteDatasetItem(id)
+  return itemIds.length
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -172,11 +201,8 @@ function readCsv(boardDir: string): string {
   return fs.readFileSync(csvPath, 'utf-8')
 }
 
-function getDatasetName(metadata: Metadata, output: DatasetOutput, commitHash: string): string {
-  if (metadata.mode === 'add_to_existing' && metadata.existingDatasetNames?.[output.name]) {
-    return metadata.existingDatasetNames[output.name]
-  }
-  return `${metadata.datasetNamePrefix}-${output.name}-${commitHash}`
+function getDatasetName(metadata: Metadata, output: DatasetOutput): string {
+  return `${metadata.datasetNamePrefix}-${output.name}`
 }
 
 async function processBoard(boardDir: string, dryRun: boolean, commitHash: string): Promise<UploadReceipt> {
@@ -185,19 +211,22 @@ async function processBoard(boardDir: string, dryRun: boolean, commitHash: strin
 
   console.log(`\n--- Board: ${metadata.boardId} (${boardDir}) ---`)
   console.log(`  Prefix: ${metadata.datasetNamePrefix}`)
-  console.log(`  Mode:   ${metadata.mode || 'create_new'}`)
   console.log(`  Commit: ${commitHash}`)
 
   const outputs = convertAll(csvText, metadata.boardId)
   const receiptDatasets: UploadReceipt['datasets'] = []
 
   for (const output of outputs) {
-    const datasetName = getDatasetName(metadata, output, commitHash)
+    const datasetName = getDatasetName(metadata, output)
     console.log(`  [${output.name}] ${output.rows.length} items -> "${datasetName}"`)
 
     if (!dryRun) {
-      if (metadata.mode !== 'add_to_existing') {
-        await createDataset(datasetName)
+      await createDataset(datasetName)
+
+      // Clear existing items before re-uploading (Langfuse creates a new version)
+      const deletedCount = await clearDatasetItems(datasetName)
+      if (deletedCount > 0) {
+        console.log(`    -> cleared ${deletedCount} existing items`)
       }
 
       for (const row of output.rows) {
@@ -226,7 +255,6 @@ async function processBoard(boardDir: string, dryRun: boolean, commitHash: strin
   const receipt: UploadReceipt = {
     uploadedAt: new Date().toISOString(),
     boardId: metadata.boardId,
-    mode: metadata.mode || 'create_new',
     commitHash,
     datasets: receiptDatasets,
     success: true,

@@ -550,7 +550,7 @@
 
 .dm-version-header {
     display: grid;
-    grid-template-columns: 100px 180px 1fr 70px;
+    grid-template-columns: 100px 180px 1fr;
     gap: 0.75rem;
     font-size: 0.7rem;
     font-weight: 600;
@@ -563,7 +563,7 @@
 
 .dm-version-row {
     display: grid;
-    grid-template-columns: 100px 180px 1fr 70px;
+    grid-template-columns: 100px 180px 1fr;
     gap: 0.75rem;
     align-items: center;
     padding: 0.5rem 0;
@@ -602,10 +602,6 @@
     padding: 0.1rem 0.4rem;
     border-radius: 3px;
     white-space: nowrap;
-}
-
-.dm-version-actions {
-    text-align: right;
 }
 
 /* ── Delete Confirmation Modal ── */

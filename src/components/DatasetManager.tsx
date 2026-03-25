@@ -192,14 +192,6 @@ export default function DatasetManager() {
   // Expanded boards (to show version list)
   const [expandedBoards, setExpandedBoards] = useState<Set<string>>(new Set())
 
-  // Delete confirmation
-  const [deleteTarget, setDeleteTarget] = useState<{
-    boardId: string
-    prefix: string
-    datasetNames: string[]
-  } | null>(null)
-  const [deleting, setDeleting] = useState(false)
-
   // Upload form
   const [file, setFile] = useState<File | null>(null)
   const [boardId, setBoardId] = useState('')
@@ -275,35 +267,6 @@ export default function DatasetManager() {
       else next.add(directory)
       return next
     })
-  }
-
-  // ── Delete dataset items via GitHub Actions workflow ──
-  async function handleDeleteConfirm() {
-    if (!deleteTarget || !pat || !patValid || !owner || !repo) return
-
-    setDeleting(true)
-    const { prefix, datasetNames } = deleteTarget
-
-    try {
-      const res = await githubRequest(
-        pat,
-        'POST',
-        `/repos/${owner}/${repo}/actions/workflows/delete-datasets.yml/dispatches`,
-        {
-          ref: 'main',
-          inputs: { dataset_names: datasetNames.join(',') },
-        },
-      )
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${JSON.stringify(res.data)}`)
-      }
-      setStatusMsg({ type: 'info', text: `Delete workflow triggered for ${prefix}. Check Actions for progress.` })
-    } catch (err) {
-      setStatusMsg({ type: 'error', text: `Failed to trigger delete: ${err instanceof Error ? err.message : 'Unknown error'}` })
-    }
-
-    setDeleting(false)
-    setDeleteTarget(null)
   }
 
   // ── File handling ──
@@ -536,31 +499,12 @@ export default function DatasetManager() {
                             {history.length > 0 ? 'Uploaded' : 'Never uploaded'}
                           </span>
                           {patValid && (
-                            <>
-                              <button
-                                className="dm-btn dm-btn-secondary"
-                                onClick={e => { e.stopPropagation(); handleReUpload(entry.directory) }}
-                              >
-                                Re-upload
-                              </button>
-                              {history.length > 0 && (
-                                <button
-                                  className="dm-btn dm-btn-danger"
-                                  onClick={e => {
-                                    e.stopPropagation()
-                                    setDeleteTarget({
-                                      boardId: entry.boardId,
-                                      prefix: entry.datasetNamePrefix,
-                                      datasetNames: ['rule', 'fanout', 'e2e', 'explainability'].map(
-                                        t => `${entry.datasetNamePrefix}-${t}`
-                                      ),
-                                    })
-                                  }}
-                                >
-                                  Delete Items
-                                </button>
-                              )}
-                            </>
+                            <button
+                              className="dm-btn dm-btn-secondary"
+                              onClick={e => { e.stopPropagation(); handleReUpload(entry.directory) }}
+                            >
+                              Re-upload
+                            </button>
                           )}
                         </div>
                       </div>
@@ -703,41 +647,6 @@ export default function DatasetManager() {
         )}
       </div>
 
-      {/* ── Delete Confirmation Modal ── */}
-      {deleteTarget && (
-        <div className="dm-modal-overlay" onClick={() => !deleting && setDeleteTarget(null)}>
-          <div className="dm-modal" onClick={e => e.stopPropagation()}>
-            <h3>Delete all dataset items?</h3>
-            <p>
-              This will delete all items from the 4 Langfuse datasets for{' '}
-              <strong>{deleteTarget.prefix}</strong>. The empty dataset shells will remain.
-            </p>
-            <div className="dm-modal-dataset-list">
-              {deleteTarget.datasetNames.map(name => (
-                <div key={name} className="dm-modal-dataset-item">
-                  <code>{name}</code>
-                </div>
-              ))}
-            </div>
-            <div className="dm-modal-actions">
-              <button
-                className="dm-btn dm-btn-secondary"
-                onClick={() => setDeleteTarget(null)}
-                disabled={deleting}
-              >
-                Cancel
-              </button>
-              <button
-                className="dm-btn dm-btn-danger"
-                onClick={handleDeleteConfirm}
-                disabled={deleting}
-              >
-                {deleting ? 'Deleting...' : 'Delete All'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

@@ -239,19 +239,6 @@
     background: #dee2e6;
 }
 
-.dm-btn-danger {
-    background: #dc3545;
-    color: white;
-}
-
-.dm-btn-danger:hover:not(:disabled) {
-    background: #c82333;
-}
-
-.dm-btn-danger:disabled {
-    background: #e4606d;
-    cursor: not-allowed;
-}
 
 /* ── Upload New Tab ── */
 
@@ -604,78 +591,3 @@
     white-space: nowrap;
 }
 
-/* ── Delete Confirmation Modal ── */
-
-.dm-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.dm-modal {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-}
-
-.dm-modal h3 {
-    margin: 0 0 0.75rem 0;
-    font-size: 1.1rem;
-    color: #dc3545;
-}
-
-.dm-modal p {
-    margin: 0 0 1rem 0;
-    font-size: 0.85rem;
-    color: #495057;
-    line-height: 1.5;
-}
-
-.dm-modal code {
-    background: #f8f9fa;
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-size: 0.85rem;
-}
-
-.dm-modal-dataset-list {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 4px;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 1.25rem;
-}
-
-.dm-modal-dataset-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.3rem 0;
-    font-size: 0.8rem;
-}
-
-.dm-modal-dataset-item code {
-    font-size: 0.78rem;
-    color: #333;
-}
-
-.dm-modal-item-count {
-    font-size: 0.7rem;
-    color: #868e96;
-}
-
-.dm-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-}

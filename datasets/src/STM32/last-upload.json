@@ -1,0 +1,28 @@
+{
+  "uploadedAt": "2026-03-25T20:42:12.713Z",
+  "boardId": "STM32",
+  "mode": "create_new",
+  "datasets": [
+    {
+      "name": "rule",
+      "datasetName": "test-upload-rule",
+      "itemCount": 11
+    },
+    {
+      "name": "fanout",
+      "datasetName": "test-upload-fanout",
+      "itemCount": 11
+    },
+    {
+      "name": "e2e",
+      "datasetName": "test-upload-e2e",
+      "itemCount": 17
+    },
+    {
+      "name": "explainability",
+      "datasetName": "test-upload-explainability",
+      "itemCount": 111
+    }
+  ],
+  "success": true
+}

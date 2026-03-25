@@ -1,11 +1,41 @@
 {
   "datasets": [
     {
+      "boardId": "STM32",
+      "directory": "STM32",
+      "datasetNamePrefix": "test-upload",
+      "lastUpload": {
+        "uploadedAt": "2026-03-25T20:42:12.713Z",
+        "datasets": [
+          {
+            "name": "rule",
+            "datasetName": "test-upload-rule",
+            "itemCount": 11
+          },
+          {
+            "name": "fanout",
+            "datasetName": "test-upload-fanout",
+            "itemCount": 11
+          },
+          {
+            "name": "e2e",
+            "datasetName": "test-upload-e2e",
+            "itemCount": 17
+          },
+          {
+            "name": "explainability",
+            "datasetName": "test-upload-explainability",
+            "itemCount": 111
+          }
+        ]
+      }
+    },
+    {
       "boardId": "pixmpx",
       "directory": "pixmpx",
       "datasetNamePrefix": "test-run",
       "lastUpload": {
-        "uploadedAt": "2026-03-23T22:29:54.417Z",
+        "uploadedAt": "2026-03-25T20:42:14.403Z",
         "datasets": [
           {
             "name": "rule",
@@ -31,11 +61,41 @@
       }
     },
     {
+      "boardId": "stm32",
+      "directory": "stm32",
+      "datasetNamePrefix": "test-test",
+      "lastUpload": {
+        "uploadedAt": "2026-03-25T20:42:16.287Z",
+        "datasets": [
+          {
+            "name": "rule",
+            "datasetName": "test-test-rule",
+            "itemCount": 11
+          },
+          {
+            "name": "fanout",
+            "datasetName": "test-test-fanout",
+            "itemCount": 11
+          },
+          {
+            "name": "e2e",
+            "datasetName": "test-test-e2e",
+            "itemCount": 17
+          },
+          {
+            "name": "explainability",
+            "datasetName": "test-test-explainability",
+            "itemCount": 111
+          }
+        ]
+      }
+    },
+    {
       "boardId": "tida",
       "directory": "tida",
       "datasetNamePrefix": "test-run-2",
       "lastUpload": {
-        "uploadedAt": "2026-03-23T22:29:56.083Z",
+        "uploadedAt": "2026-03-25T20:42:17.392Z",
         "datasets": [
           {
             "name": "rule",
@@ -59,7 +119,37 @@
           }
         ]
       }
+    },
+    {
+      "boardId": "tida11",
+      "directory": "tida11",
+      "datasetNamePrefix": "TEST-tida-global-rules",
+      "lastUpload": {
+        "uploadedAt": "2026-03-25T20:42:18.688Z",
+        "datasets": [
+          {
+            "name": "rule",
+            "datasetName": "TEST-tida-global-rules-rule",
+            "itemCount": 8
+          },
+          {
+            "name": "fanout",
+            "datasetName": "TEST-tida-global-rules-fanout",
+            "itemCount": 8
+          },
+          {
+            "name": "e2e",
+            "datasetName": "TEST-tida-global-rules-e2e",
+            "itemCount": 14
+          },
+          {
+            "name": "explainability",
+            "datasetName": "TEST-tida-global-rules-explainability",
+            "itemCount": 73
+          }
+        ]
+      }
     }
   ],
-  "generatedAt": "2026-03-23T22:29:56.083Z"
+  "generatedAt": "2026-03-25T20:42:18.689Z"
 }

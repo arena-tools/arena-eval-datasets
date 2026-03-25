@@ -45,17 +45,19 @@ interface UploadReceipt {
   error?: string
 }
 
+interface UploadHistoryEntry {
+  uploadedAt: string
+  commitHash: string
+  datasets: { name: string; datasetName: string; itemCount: number }[]
+}
+
 interface ManifestEntry {
   boardId: string
   directory: string
   datasetNamePrefix: string
   description?: string
   author?: string
-  lastUpload?: {
-    uploadedAt: string
-    commitHash: string
-    datasets: { name: string; datasetName: string; itemCount: number }[]
-  }
+  uploadHistory: UploadHistoryEntry[]
 }
 
 interface Manifest {
@@ -231,9 +233,19 @@ async function processBoard(boardDir: string, dryRun: boolean, commitHash: strin
   }
 
   if (!dryRun) {
-    const receiptPath = path.join(DATASETS_DIR, boardDir, 'last-upload.json')
-    fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2) + '\n')
-    console.log(`  Receipt written to ${receiptPath}`)
+    // Append to upload history
+    const historyPath = path.join(DATASETS_DIR, boardDir, 'upload-history.json')
+    let history: UploadHistoryEntry[] = []
+    if (fs.existsSync(historyPath)) {
+      try { history = JSON.parse(fs.readFileSync(historyPath, 'utf-8')) } catch { /* start fresh */ }
+    }
+    history.push({
+      uploadedAt: receipt.uploadedAt,
+      commitHash: receipt.commitHash,
+      datasets: receipt.datasets,
+    })
+    fs.writeFileSync(historyPath, JSON.stringify(history, null, 2) + '\n')
+    console.log(`  History updated at ${historyPath}`)
   }
 
   return receipt
@@ -253,17 +265,12 @@ function updateManifest(): void {
       author: metadata.author,
     }
 
-    const receiptPath = path.join(DATASETS_DIR, dir, 'last-upload.json')
-    if (fs.existsSync(receiptPath)) {
+    const historyPath = path.join(DATASETS_DIR, dir, 'upload-history.json')
+    if (fs.existsSync(historyPath)) {
       try {
-        const receipt: UploadReceipt = JSON.parse(fs.readFileSync(receiptPath, 'utf-8'))
-        entry.lastUpload = {
-          uploadedAt: receipt.uploadedAt,
-          commitHash: receipt.commitHash,
-          datasets: receipt.datasets,
-        }
+        entry.uploadHistory = JSON.parse(fs.readFileSync(historyPath, 'utf-8'))
       } catch {
-        // skip malformed receipt
+        // skip malformed history
       }
     }
 
@@ -388,19 +395,19 @@ Options:
       hasErrors = true
       console.error(`\nERROR processing ${dir}:`, err instanceof Error ? err.message : err)
 
-      // Write error receipt
+      // Append error to upload history
       if (!dryRun) {
-        const receipt: UploadReceipt = {
+        const historyPath = path.join(DATASETS_DIR, dir, 'upload-history.json')
+        let history: UploadHistoryEntry[] = []
+        if (fs.existsSync(historyPath)) {
+          try { history = JSON.parse(fs.readFileSync(historyPath, 'utf-8')) } catch { /* start fresh */ }
+        }
+        history.push({
           uploadedAt: new Date().toISOString(),
-          boardId: dir,
-          mode: 'unknown',
           commitHash,
           datasets: [],
-          success: false,
-          error: err instanceof Error ? err.message : String(err),
-        }
-        const receiptPath = path.join(DATASETS_DIR, dir, 'last-upload.json')
-        fs.writeFileSync(receiptPath, JSON.stringify(receipt, null, 2) + '\n')
+        })
+        fs.writeFileSync(historyPath, JSON.stringify(history, null, 2) + '\n')
       }
     }
   }

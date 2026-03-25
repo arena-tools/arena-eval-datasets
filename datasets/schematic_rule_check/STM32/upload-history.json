@@ -1,0 +1,28 @@
+[
+  {
+    "uploadedAt": "2026-03-25T21:04:59.077Z",
+    "commitHash": "29d668a",
+    "datasets": [
+      {
+        "name": "rule",
+        "datasetName": "test-upload-rule-29d668a",
+        "itemCount": 11
+      },
+      {
+        "name": "fanout",
+        "datasetName": "test-upload-fanout-29d668a",
+        "itemCount": 11
+      },
+      {
+        "name": "e2e",
+        "datasetName": "test-upload-e2e-29d668a",
+        "itemCount": 17
+      },
+      {
+        "name": "explainability",
+        "datasetName": "test-upload-explainability-29d668a",
+        "itemCount": 111
+      }
+    ]
+  }
+]

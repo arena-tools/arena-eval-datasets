@@ -1,0 +1,28 @@
+[
+  {
+    "uploadedAt": "2026-03-25T20:42:18.688Z",
+    "commitHash": "unknown",
+    "datasets": [
+      {
+        "name": "rule",
+        "datasetName": "TEST-tida-global-rules-rule",
+        "itemCount": 8
+      },
+      {
+        "name": "fanout",
+        "datasetName": "TEST-tida-global-rules-fanout",
+        "itemCount": 8
+      },
+      {
+        "name": "e2e",
+        "datasetName": "TEST-tida-global-rules-e2e",
+        "itemCount": 14
+      },
+      {
+        "name": "explainability",
+        "datasetName": "TEST-tida-global-rules-explainability",
+        "itemCount": 73
+      }
+    ]
+  }
+]

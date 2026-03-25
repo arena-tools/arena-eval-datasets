@@ -6,17 +6,19 @@ import './DatasetManager.css'
 // Types
 // ---------------------------------------------------------------------------
 
+interface UploadHistoryEntry {
+  uploadedAt: string
+  commitHash: string
+  datasets: { name: string; datasetName: string; itemCount: number }[]
+}
+
 interface ManifestEntry {
   boardId: string
   directory: string
   datasetNamePrefix: string
   description?: string
   author?: string
-  lastUpload?: {
-    uploadedAt: string
-    commitHash: string
-    datasets: { name: string; datasetName: string; itemCount: number }[]
-  }
+  uploadHistory: UploadHistoryEntry[]
 }
 
 interface Manifest {
@@ -79,7 +81,6 @@ async function commitFiles(
   branch: string = 'main',
   maxRetries: number = 3,
 ): Promise<void> {
-  // Create blobs once — they're content-addressed and reusable across retries
   const treeEntries = []
   for (const file of files) {
     const blobRes = await githubRequest(pat, 'POST', `/repos/${owner}/${repo}/git/blobs`, {
@@ -96,7 +97,6 @@ async function commitFiles(
   }
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    // Fetch latest branch ref
     const refRes = await githubRequest(pat, 'GET', `/repos/${owner}/${repo}/git/ref/heads/${branch}`)
     if (!refRes.ok) throw new Error(`Failed to get branch ref: ${refRes.status}`)
     const currentSha = (refRes.data as { object: { sha: string } }).object.sha
@@ -105,7 +105,6 @@ async function commitFiles(
     if (!commitRes.ok) throw new Error(`Failed to get commit: ${commitRes.status}`)
     const treeSha = (commitRes.data as { tree: { sha: string } }).tree.sha
 
-    // Create tree and commit on top of latest
     const newTreeRes = await githubRequest(pat, 'POST', `/repos/${owner}/${repo}/git/trees`, {
       base_tree: treeSha,
       tree: treeEntries,
@@ -121,14 +120,12 @@ async function commitFiles(
     if (!newCommitRes.ok) throw new Error(`Failed to create commit: ${newCommitRes.status}`)
     const newCommitSha = (newCommitRes.data as { sha: string }).sha
 
-    // Try to fast-forward the branch
     const updateRes = await githubRequest(pat, 'PATCH', `/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
       sha: newCommitSha,
     })
 
-    if (updateRes.ok) return // success
+    if (updateRes.ok) return
 
-    // Retry on non-fast-forward (branch moved between read and update)
     const errMsg = (updateRes.data as { message?: string })?.message || ''
     if (updateRes.status === 422 && errMsg.includes('not a fast forward') && attempt < maxRetries - 1) {
       console.warn(`Branch moved during commit (attempt ${attempt + 1}/${maxRetries}), retrying...`)
@@ -177,13 +174,39 @@ async function getLatestWorkflowRun(
 }
 
 // ---------------------------------------------------------------------------
+// Langfuse API helpers
+// ---------------------------------------------------------------------------
+
+async function langfuseDeleteDataset(
+  baseUrl: string,
+  publicKey: string,
+  secretKey: string,
+  datasetName: string,
+): Promise<{ ok: boolean; status: number }> {
+  const authHeader = 'Basic ' + btoa(`${publicKey}:${secretKey}`)
+  const res = await fetch(`${baseUrl}/api/public/v2/datasets/${encodeURIComponent(datasetName)}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authHeader,
+    },
+  })
+  return { ok: res.ok, status: res.status }
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export default function DatasetManager() {
-  // Auth
+  // Auth — GitHub
   const [pat, setPat] = useState(() => localStorage.getItem('github_pat') || '')
   const [patValid, setPatValid] = useState(false)
+
+  // Auth — Langfuse
+  const [lfBaseUrl, setLfBaseUrl] = useState(() => localStorage.getItem('langfuse_base_url') || '')
+  const [lfPublicKey, setLfPublicKey] = useState(() => localStorage.getItem('langfuse_public_key') || '')
+  const [lfSecretKey, setLfSecretKey] = useState(() => localStorage.getItem('langfuse_secret_key') || '')
 
   // Tabs
   const [activeTab, setActiveTab] = useState<'datasets' | 'upload'>('datasets')
@@ -191,6 +214,17 @@ export default function DatasetManager() {
   // Manifest / dataset list
   const [manifest, setManifest] = useState<Manifest | null>(null)
   const [manifestLoading, setManifestLoading] = useState(true)
+
+  // Expanded boards (to show version list)
+  const [expandedBoards, setExpandedBoards] = useState<Set<string>>(new Set())
+
+  // Delete confirmation
+  const [deleteTarget, setDeleteTarget] = useState<{
+    boardId: string
+    entry: UploadHistoryEntry
+    prefix: string
+  } | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   // Upload form
   const [file, setFile] = useState<File | null>(null)
@@ -214,6 +248,13 @@ export default function DatasetManager() {
 
   // GitHub config
   const { owner, repo } = getGitHubConfig()
+
+  const langfuseConfigured = lfBaseUrl && lfPublicKey && lfSecretKey
+
+  // ── Persist Langfuse creds ──
+  useEffect(() => { localStorage.setItem('langfuse_base_url', lfBaseUrl) }, [lfBaseUrl])
+  useEffect(() => { localStorage.setItem('langfuse_public_key', lfPublicKey) }, [lfPublicKey])
+  useEffect(() => { localStorage.setItem('langfuse_secret_key', lfSecretKey) }, [lfSecretKey])
 
   // ── Load manifest ──
   useEffect(() => {
@@ -260,6 +301,45 @@ export default function DatasetManager() {
     })()
     return () => { cancelled = true }
   }, [pat])
+
+  // ── Toggle board expansion ──
+  function toggleBoard(directory: string) {
+    setExpandedBoards(prev => {
+      const next = new Set(prev)
+      if (next.has(directory)) next.delete(directory)
+      else next.add(directory)
+      return next
+    })
+  }
+
+  // ── Delete datasets from Langfuse ──
+  async function handleDeleteConfirm() {
+    if (!deleteTarget || !langfuseConfigured) return
+
+    setDeleting(true)
+    const { entry } = deleteTarget
+    const errors: string[] = []
+
+    for (const ds of entry.datasets) {
+      try {
+        const res = await langfuseDeleteDataset(lfBaseUrl, lfPublicKey, lfSecretKey, ds.datasetName)
+        if (!res.ok && res.status !== 404) {
+          errors.push(`${ds.datasetName}: HTTP ${res.status}`)
+        }
+      } catch (err) {
+        errors.push(`${ds.datasetName}: ${err instanceof Error ? err.message : 'Network error'}`)
+      }
+    }
+
+    setDeleting(false)
+    setDeleteTarget(null)
+
+    if (errors.length > 0) {
+      setStatusMsg({ type: 'error', text: `Failed to delete some datasets: ${errors.join('; ')}` })
+    } else {
+      setStatusMsg({ type: 'success', text: `Deleted ${entry.datasets.length} datasets for ${deleteTarget.prefix} @ ${entry.commitHash}` })
+    }
+  }
 
   // ── File handling ──
   const acceptFile = useCallback((f: File) => {
@@ -438,6 +518,35 @@ export default function DatasetManager() {
         )}
       </div>
 
+      {/* Langfuse auth bar */}
+      <div className="dm-auth-bar">
+        <label>Langfuse:</label>
+        <input
+          type="text"
+          value={lfBaseUrl}
+          onChange={e => setLfBaseUrl(e.target.value)}
+          placeholder="Base URL"
+          style={{ flex: '0 1 200px' }}
+        />
+        <input
+          type="password"
+          value={lfPublicKey}
+          onChange={e => setLfPublicKey(e.target.value)}
+          placeholder="Public Key"
+          style={{ flex: '0 1 160px' }}
+        />
+        <input
+          type="password"
+          value={lfSecretKey}
+          onChange={e => setLfSecretKey(e.target.value)}
+          placeholder="Secret Key"
+          style={{ flex: '0 1 160px' }}
+        />
+        <span className={`dm-auth-status ${langfuseConfigured ? 'connected' : 'disconnected'}`}>
+          {langfuseConfigured ? 'Configured' : 'Not set'}
+        </span>
+      </div>
+
       {/* Tabs */}
       <div className="dm-tabs">
         <button className={`dm-tab ${activeTab === 'datasets' ? 'active' : ''}`} onClick={() => setActiveTab('datasets')}>
@@ -476,38 +585,88 @@ export default function DatasetManager() {
               </div>
             ) : (
               <div className="dm-dataset-list">
-                {manifest.datasets.map(entry => (
-                  <div key={entry.directory} className="dm-dataset-row">
-                    <div className="dm-dataset-info">
-                      <div className="dm-dataset-title">{entry.boardId}</div>
-                      <div className="dm-dataset-meta">
-                        <span>Prefix: {entry.datasetNamePrefix}</span>
-                        {entry.description && <span>{entry.description}</span>}
-                        {entry.author && <span>by {entry.author}</span>}
-                        {entry.lastUpload && (
-                          <span>
-                            Last upload: {new Date(entry.lastUpload.uploadedAt).toLocaleDateString()}
-                            {entry.lastUpload.commitHash && ` (${entry.lastUpload.commitHash})`} —{' '}
-                            {entry.lastUpload.datasets.map(d => `${d.name}: ${d.itemCount}`).join(', ')} items
+                {manifest.datasets.map(entry => {
+                  const history = entry.uploadHistory || []
+                  const isExpanded = expandedBoards.has(entry.directory)
+
+                  return (
+                    <div key={entry.directory} className="dm-dataset-card">
+                      <div className="dm-dataset-row" onClick={() => history.length > 0 && toggleBoard(entry.directory)} style={{ cursor: history.length > 0 ? 'pointer' : 'default' }}>
+                        <div className="dm-dataset-info">
+                          <div className="dm-dataset-title">
+                            {history.length > 0 && (
+                              <span className="dm-expand-icon">{isExpanded ? '\u25BC' : '\u25B6'}</span>
+                            )}
+                            {entry.boardId}
+                          </div>
+                          <div className="dm-dataset-meta">
+                            <span>Prefix: {entry.datasetNamePrefix}</span>
+                            {entry.description && <span>{entry.description}</span>}
+                            {entry.author && <span>by {entry.author}</span>}
+                            <span>{history.length} version{history.length !== 1 ? 's' : ''}</span>
+                          </div>
+                        </div>
+                        <div className="dm-dataset-status">
+                          <span className={`dm-status-badge ${history.length > 0 ? 'success' : 'never'}`}>
+                            {history.length > 0 ? 'Uploaded' : 'Never uploaded'}
                           </span>
-                        )}
+                          {patValid && (
+                            <button
+                              className="dm-btn dm-btn-secondary"
+                              onClick={e => { e.stopPropagation(); handleReUpload(entry.directory) }}
+                            >
+                              Re-upload
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="dm-dataset-status">
-                      <span className={`dm-status-badge ${entry.lastUpload ? 'success' : 'never'}`}>
-                        {entry.lastUpload ? 'Uploaded' : 'Never uploaded'}
-                      </span>
-                      {patValid && (
-                        <button
-                          className="dm-btn dm-btn-secondary"
-                          onClick={() => handleReUpload(entry.directory)}
-                        >
-                          Re-upload
-                        </button>
+
+                      {/* Version history */}
+                      {isExpanded && history.length > 0 && (
+                        <div className="dm-version-list">
+                          <div className="dm-version-header">
+                            <span>Commit</span>
+                            <span>Uploaded</span>
+                            <span>Datasets</span>
+                            <span></span>
+                          </div>
+                          {[...history].reverse().map((h, i) => (
+                            <div key={`${h.commitHash}-${i}`} className="dm-version-row">
+                              <span className="dm-version-hash">
+                                <code>{h.commitHash}</code>
+                              </span>
+                              <span className="dm-version-date">
+                                {new Date(h.uploadedAt).toLocaleDateString()}{' '}
+                                {new Date(h.uploadedAt).toLocaleTimeString()}
+                              </span>
+                              <span className="dm-version-datasets">
+                                {h.datasets.map(d => (
+                                  <span key={d.datasetName} className="dm-version-ds-tag" title={d.datasetName}>
+                                    {d.name}: {d.itemCount}
+                                  </span>
+                                ))}
+                              </span>
+                              <span className="dm-version-actions">
+                                {langfuseConfigured && h.datasets.length > 0 && (
+                                  <button
+                                    className="dm-btn dm-btn-danger"
+                                    onClick={() => setDeleteTarget({
+                                      boardId: entry.boardId,
+                                      entry: h,
+                                      prefix: entry.datasetNamePrefix,
+                                    })}
+                                  >
+                                    Delete
+                                  </button>
+                                )}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
                       )}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </>
@@ -627,10 +786,10 @@ export default function DatasetManager() {
                       <div key={ds.name} className="dm-preview-card">
                         <div className="dm-preview-card-title">
                           {ds.name} {uploadMode === 'create_new'
-                            ? `→ ${datasetPrefix}-${ds.name}-{hash}`
+                            ? `\u2192 ${datasetPrefix}-${ds.name}-{hash}`
                             : existingNames[ds.name as keyof typeof existingNames]
-                              ? `→ ${existingNames[ds.name as keyof typeof existingNames]}`
-                              : `→ ${datasetPrefix}-${ds.name}-{hash}`
+                              ? `\u2192 ${existingNames[ds.name as keyof typeof existingNames]}`
+                              : `\u2192 ${datasetPrefix}-${ds.name}-{hash}`
                           }
                         </div>
                         <div className="dm-preview-card-count">{ds.rows.length} items</div>
@@ -657,6 +816,43 @@ export default function DatasetManager() {
           </div>
         )}
       </div>
+
+      {/* ── Delete Confirmation Modal ── */}
+      {deleteTarget && (
+        <div className="dm-modal-overlay" onClick={() => !deleting && setDeleteTarget(null)}>
+          <div className="dm-modal" onClick={e => e.stopPropagation()}>
+            <h3>Delete datasets?</h3>
+            <p>
+              This will permanently delete all 4 Langfuse datasets for{' '}
+              <strong>{deleteTarget.prefix}</strong> @ <code>{deleteTarget.entry.commitHash}</code>.
+            </p>
+            <div className="dm-modal-dataset-list">
+              {deleteTarget.entry.datasets.map(ds => (
+                <div key={ds.datasetName} className="dm-modal-dataset-item">
+                  <code>{ds.datasetName}</code>
+                  <span className="dm-modal-item-count">{ds.itemCount} items</span>
+                </div>
+              ))}
+            </div>
+            <div className="dm-modal-actions">
+              <button
+                className="dm-btn dm-btn-secondary"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                className="dm-btn dm-btn-danger"
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : 'Delete All'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

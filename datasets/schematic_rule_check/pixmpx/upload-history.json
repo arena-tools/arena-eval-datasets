@@ -1,0 +1,28 @@
+[
+  {
+    "uploadedAt": "2026-03-25T20:42:14.403Z",
+    "commitHash": "unknown",
+    "datasets": [
+      {
+        "name": "rule",
+        "datasetName": "test-run-rule",
+        "itemCount": 10
+      },
+      {
+        "name": "fanout",
+        "datasetName": "test-run-fanout",
+        "itemCount": 10
+      },
+      {
+        "name": "e2e",
+        "datasetName": "test-run-e2e",
+        "itemCount": 12
+      },
+      {
+        "name": "explainability",
+        "datasetName": "test-run-explainability",
+        "itemCount": 108
+      }
+    ]
+  }
+]

@@ -4,189 +4,227 @@
       "boardId": "STM32",
       "directory": "STM32",
       "datasetNamePrefix": "test-upload",
-      "lastUpload": {
-        "uploadedAt": "2026-03-25T21:05:34.532Z",
-        "commitHash": "078fd84",
-        "datasets": [
-          {
-            "name": "rule",
-            "datasetName": "test-upload-rule-078fd84",
-            "itemCount": 11
-          },
-          {
-            "name": "fanout",
-            "datasetName": "test-upload-fanout-078fd84",
-            "itemCount": 11
-          },
-          {
-            "name": "e2e",
-            "datasetName": "test-upload-e2e-078fd84",
-            "itemCount": 17
-          },
-          {
-            "name": "explainability",
-            "datasetName": "test-upload-explainability-078fd84",
-            "itemCount": 111
-          }
-        ]
-      }
+      "uploadHistory": [
+        {
+          "uploadedAt": "2026-03-25T21:04:59.077Z",
+          "commitHash": "29d668a",
+          "datasets": [
+            {
+              "name": "rule",
+              "datasetName": "test-upload-rule-29d668a",
+              "itemCount": 11
+            },
+            {
+              "name": "fanout",
+              "datasetName": "test-upload-fanout-29d668a",
+              "itemCount": 11
+            },
+            {
+              "name": "e2e",
+              "datasetName": "test-upload-e2e-29d668a",
+              "itemCount": 17
+            },
+            {
+              "name": "explainability",
+              "datasetName": "test-upload-explainability-29d668a",
+              "itemCount": 111
+            }
+          ]
+        }
+      ]
     },
     {
       "boardId": "pixmpx",
       "directory": "pixmpx",
       "datasetNamePrefix": "test-run",
-      "lastUpload": {
-        "uploadedAt": "2026-03-25T21:05:36.334Z",
-        "commitHash": "078fd84",
-        "datasets": [
-          {
-            "name": "rule",
-            "datasetName": "test-run-rule-078fd84",
-            "itemCount": 10
-          },
-          {
-            "name": "fanout",
-            "datasetName": "test-run-fanout-078fd84",
-            "itemCount": 10
-          },
-          {
-            "name": "e2e",
-            "datasetName": "test-run-e2e-078fd84",
-            "itemCount": 12
-          },
-          {
-            "name": "explainability",
-            "datasetName": "test-run-explainability-078fd84",
-            "itemCount": 108
-          }
-        ]
-      }
+      "uploadHistory": [
+        {
+          "uploadedAt": "2026-03-25T20:42:14.403Z",
+          "commitHash": "unknown",
+          "datasets": [
+            {
+              "name": "rule",
+              "datasetName": "test-run-rule",
+              "itemCount": 10
+            },
+            {
+              "name": "fanout",
+              "datasetName": "test-run-fanout",
+              "itemCount": 10
+            },
+            {
+              "name": "e2e",
+              "datasetName": "test-run-e2e",
+              "itemCount": 12
+            },
+            {
+              "name": "explainability",
+              "datasetName": "test-run-explainability",
+              "itemCount": 108
+            }
+          ]
+        }
+      ]
     },
     {
       "boardId": "stm32",
       "directory": "stm32",
       "datasetNamePrefix": "test-test",
-      "lastUpload": {
-        "uploadedAt": "2026-03-25T21:05:37.933Z",
-        "commitHash": "078fd84",
-        "datasets": [
-          {
-            "name": "rule",
-            "datasetName": "test-test-rule-078fd84",
-            "itemCount": 11
-          },
-          {
-            "name": "fanout",
-            "datasetName": "test-test-fanout-078fd84",
-            "itemCount": 11
-          },
-          {
-            "name": "e2e",
-            "datasetName": "test-test-e2e-078fd84",
-            "itemCount": 17
-          },
-          {
-            "name": "explainability",
-            "datasetName": "test-test-explainability-078fd84",
-            "itemCount": 111
-          }
-        ]
-      }
+      "uploadHistory": [
+        {
+          "uploadedAt": "2026-03-25T20:42:16.287Z",
+          "commitHash": "unknown",
+          "datasets": [
+            {
+              "name": "rule",
+              "datasetName": "test-test-rule",
+              "itemCount": 11
+            },
+            {
+              "name": "fanout",
+              "datasetName": "test-test-fanout",
+              "itemCount": 11
+            },
+            {
+              "name": "e2e",
+              "datasetName": "test-test-e2e",
+              "itemCount": 17
+            },
+            {
+              "name": "explainability",
+              "datasetName": "test-test-explainability",
+              "itemCount": 111
+            }
+          ]
+        }
+      ]
     },
     {
       "boardId": "test-minimal",
       "directory": "test-minimal",
       "datasetNamePrefix": "test-minimal",
       "description": "Minimal test dataset for verifying versioned uploads",
-      "lastUpload": {
-        "uploadedAt": "2026-03-25T21:05:38.109Z",
-        "commitHash": "078fd84",
-        "datasets": [
-          {
-            "name": "rule",
-            "datasetName": "test-minimal-rule-078fd84",
-            "itemCount": 3
-          },
-          {
-            "name": "fanout",
-            "datasetName": "test-minimal-fanout-078fd84",
-            "itemCount": 3
-          },
-          {
-            "name": "e2e",
-            "datasetName": "test-minimal-e2e-078fd84",
-            "itemCount": 3
-          },
-          {
-            "name": "explainability",
-            "datasetName": "test-minimal-explainability-078fd84",
-            "itemCount": 4
-          }
-        ]
-      }
+      "uploadHistory": [
+        {
+          "uploadedAt": "2026-03-25T20:59:39.000Z",
+          "commitHash": "c3e38ca",
+          "datasets": [
+            {
+              "name": "rule",
+              "datasetName": "test-minimal-rule-c3e38ca",
+              "itemCount": 2
+            },
+            {
+              "name": "fanout",
+              "datasetName": "test-minimal-fanout-c3e38ca",
+              "itemCount": 2
+            },
+            {
+              "name": "e2e",
+              "datasetName": "test-minimal-e2e-c3e38ca",
+              "itemCount": 2
+            },
+            {
+              "name": "explainability",
+              "datasetName": "test-minimal-explainability-c3e38ca",
+              "itemCount": 3
+            }
+          ]
+        },
+        {
+          "uploadedAt": "2026-03-25T21:00:31.024Z",
+          "commitHash": "345f75e",
+          "datasets": [
+            {
+              "name": "rule",
+              "datasetName": "test-minimal-rule-345f75e",
+              "itemCount": 3
+            },
+            {
+              "name": "fanout",
+              "datasetName": "test-minimal-fanout-345f75e",
+              "itemCount": 3
+            },
+            {
+              "name": "e2e",
+              "datasetName": "test-minimal-e2e-345f75e",
+              "itemCount": 3
+            },
+            {
+              "name": "explainability",
+              "datasetName": "test-minimal-explainability-345f75e",
+              "itemCount": 4
+            }
+          ]
+        }
+      ]
     },
     {
       "boardId": "tida",
       "directory": "tida",
       "datasetNamePrefix": "test-run-2",
-      "lastUpload": {
-        "uploadedAt": "2026-03-25T21:05:39.215Z",
-        "commitHash": "078fd84",
-        "datasets": [
-          {
-            "name": "rule",
-            "datasetName": "test-run-2-rule-078fd84",
-            "itemCount": 8
-          },
-          {
-            "name": "fanout",
-            "datasetName": "test-run-2-fanout-078fd84",
-            "itemCount": 8
-          },
-          {
-            "name": "e2e",
-            "datasetName": "test-run-2-e2e-078fd84",
-            "itemCount": 14
-          },
-          {
-            "name": "explainability",
-            "datasetName": "test-run-2-explainability-078fd84",
-            "itemCount": 73
-          }
-        ]
-      }
+      "uploadHistory": [
+        {
+          "uploadedAt": "2026-03-25T20:42:17.392Z",
+          "commitHash": "unknown",
+          "datasets": [
+            {
+              "name": "rule",
+              "datasetName": "test-run-2-rule",
+              "itemCount": 8
+            },
+            {
+              "name": "fanout",
+              "datasetName": "test-run-2-fanout",
+              "itemCount": 8
+            },
+            {
+              "name": "e2e",
+              "datasetName": "test-run-2-e2e",
+              "itemCount": 14
+            },
+            {
+              "name": "explainability",
+              "datasetName": "test-run-2-explainability",
+              "itemCount": 73
+            }
+          ]
+        }
+      ]
     },
     {
       "boardId": "tida11",
       "directory": "tida11",
       "datasetNamePrefix": "TEST-tida-global-rules",
-      "lastUpload": {
-        "uploadedAt": "2026-03-25T21:05:40.355Z",
-        "commitHash": "078fd84",
-        "datasets": [
-          {
-            "name": "rule",
-            "datasetName": "TEST-tida-global-rules-rule-078fd84",
-            "itemCount": 8
-          },
-          {
-            "name": "fanout",
-            "datasetName": "TEST-tida-global-rules-fanout-078fd84",
-            "itemCount": 8
-          },
-          {
-            "name": "e2e",
-            "datasetName": "TEST-tida-global-rules-e2e-078fd84",
-            "itemCount": 14
-          },
-          {
-            "name": "explainability",
-            "datasetName": "TEST-tida-global-rules-explainability-078fd84",
-            "itemCount": 73
-          }
-        ]
-      }
+      "uploadHistory": [
+        {
+          "uploadedAt": "2026-03-25T20:42:18.688Z",
+          "commitHash": "unknown",
+          "datasets": [
+            {
+              "name": "rule",
+              "datasetName": "TEST-tida-global-rules-rule",
+              "itemCount": 8
+            },
+            {
+              "name": "fanout",
+              "datasetName": "TEST-tida-global-rules-fanout",
+              "itemCount": 8
+            },
+            {
+              "name": "e2e",
+              "datasetName": "TEST-tida-global-rules-e2e",
+              "itemCount": 14
+            },
+            {
+              "name": "explainability",
+              "datasetName": "TEST-tida-global-rules-explainability",
+              "itemCount": 73
+            }
+          ]
+        }
+      ]
     }
   ],
-  "generatedAt": "2026-03-25T21:05:40.356Z"
+  "generatedAt": "2026-03-25T21:14:51.613Z"
 }

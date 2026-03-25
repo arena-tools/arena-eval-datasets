@@ -24,5 +24,31 @@
         "itemCount": 111
       }
     ]
+  },
+  {
+    "uploadedAt": "2026-03-25T21:15:16.982Z",
+    "commitHash": "529a4cb",
+    "datasets": [
+      {
+        "name": "rule",
+        "datasetName": "test-upload-rule-529a4cb",
+        "itemCount": 11
+      },
+      {
+        "name": "fanout",
+        "datasetName": "test-upload-fanout-529a4cb",
+        "itemCount": 11
+      },
+      {
+        "name": "e2e",
+        "datasetName": "test-upload-e2e-529a4cb",
+        "itemCount": 17
+      },
+      {
+        "name": "explainability",
+        "datasetName": "test-upload-explainability-529a4cb",
+        "itemCount": 111
+      }
+    ]
   }
 ]

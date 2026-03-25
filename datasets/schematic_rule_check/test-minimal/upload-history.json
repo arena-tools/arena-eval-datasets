@@ -50,5 +50,31 @@
         "itemCount": 4
       }
     ]
+  },
+  {
+    "uploadedAt": "2026-03-25T21:15:20.555Z",
+    "commitHash": "529a4cb",
+    "datasets": [
+      {
+        "name": "rule",
+        "datasetName": "test-minimal-rule-529a4cb",
+        "itemCount": 3
+      },
+      {
+        "name": "fanout",
+        "datasetName": "test-minimal-fanout-529a4cb",
+        "itemCount": 3
+      },
+      {
+        "name": "e2e",
+        "datasetName": "test-minimal-e2e-529a4cb",
+        "itemCount": 3
+      },
+      {
+        "name": "explainability",
+        "datasetName": "test-minimal-explainability-529a4cb",
+        "itemCount": 4
+      }
+    ]
   }
 ]

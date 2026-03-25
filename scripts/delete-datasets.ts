@@ -2,6 +2,10 @@
 /**
  * Delete Langfuse datasets by name.
  *
+ * Langfuse has no DELETE endpoint for datasets themselves, so this script
+ * lists all items in each dataset and deletes them one by one. The empty
+ * dataset shell remains in Langfuse but has zero items.
+ *
  * Usage:
  *   npx tsx scripts/delete-datasets.ts --names "ds-rule-abc1234,ds-fanout-abc1234,..."
  */
@@ -24,20 +28,63 @@ function getLangfuseConfig() {
 // Langfuse API
 // ---------------------------------------------------------------------------
 
-async function deleteDataset(name: string): Promise<{ ok: boolean; status: number }> {
+interface DatasetItem {
+  id: string
+}
+
+interface ListItemsResponse {
+  data: DatasetItem[]
+  meta: { page: number; limit: number; totalItems: number; totalPages: number }
+}
+
+async function langfuseRequest(
+  method: string,
+  endpoint: string,
+): Promise<{ ok: boolean; status: number; data: unknown }> {
   const config = getLangfuseConfig()
   const authHeader = 'Basic ' + Buffer.from(`${config.publicKey}:${config.secretKey}`).toString('base64')
-  const url = `${config.baseUrl}/api/public/v2/datasets/${encodeURIComponent(name)}`
+  const url = `${config.baseUrl}${endpoint}`
 
   const res = await fetch(url, {
-    method: 'DELETE',
+    method,
     headers: {
       'Content-Type': 'application/json',
       Authorization: authHeader,
     },
   })
 
-  return { ok: res.ok, status: res.status }
+  let data: unknown = null
+  try { data = await res.json() } catch { /* no body */ }
+  return { ok: res.ok, status: res.status, data }
+}
+
+async function listDatasetItems(datasetName: string): Promise<string[]> {
+  const ids: string[] = []
+  let page = 1
+  while (true) {
+    const res = await langfuseRequest(
+      'GET',
+      `/api/public/dataset-items?datasetName=${encodeURIComponent(datasetName)}&page=${page}&limit=50`,
+    )
+    if (!res.ok) {
+      if (res.status === 404) return ids // dataset doesn't exist
+      throw new Error(`Failed to list items for "${datasetName}": HTTP ${res.status}`)
+    }
+    const body = res.data as ListItemsResponse
+    for (const item of body.data) {
+      ids.push(item.id)
+    }
+    if (page >= body.meta.totalPages) break
+    page++
+  }
+  return ids
+}
+
+async function deleteDatasetItem(itemId: string): Promise<void> {
+  const res = await langfuseRequest('DELETE', `/api/public/dataset-items/${itemId}`)
+  if (!res.ok && res.status !== 404) {
+    throw new Error(`Failed to delete item ${itemId}: HTTP ${res.status}`)
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -81,20 +128,24 @@ async function main() {
   }
 
   const names = namesArg.split(',').map(n => n.trim()).filter(Boolean)
-  console.log(`Deleting ${names.length} dataset(s)...`)
+  console.log(`Deleting items from ${names.length} dataset(s)...\n`)
 
   let hasErrors = false
   for (const name of names) {
     try {
-      const res = await deleteDataset(name)
-      if (res.ok || res.status === 404) {
-        console.log(`  Deleted: ${name}${res.status === 404 ? ' (not found, skipped)' : ''}`)
-      } else {
-        console.error(`  FAILED: ${name} (HTTP ${res.status})`)
-        hasErrors = true
+      console.log(`  ${name}:`)
+      const itemIds = await listDatasetItems(name)
+      if (itemIds.length === 0) {
+        console.log(`    No items found (empty or missing), skipping.`)
+        continue
       }
+      console.log(`    Found ${itemIds.length} items, deleting...`)
+      for (const id of itemIds) {
+        await deleteDatasetItem(id)
+      }
+      console.log(`    Deleted ${itemIds.length} items.`)
     } catch (err) {
-      console.error(`  FAILED: ${name} (${err instanceof Error ? err.message : err})`)
+      console.error(`    FAILED: ${err instanceof Error ? err.message : err}`)
       hasErrors = true
     }
   }

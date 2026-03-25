@@ -5,26 +5,27 @@
       "directory": "STM32",
       "datasetNamePrefix": "test-upload",
       "lastUpload": {
-        "uploadedAt": "2026-03-25T20:42:12.713Z",
+        "uploadedAt": "2026-03-25T21:02:10.191Z",
+        "commitHash": "b506bc5",
         "datasets": [
           {
             "name": "rule",
-            "datasetName": "test-upload-rule",
+            "datasetName": "test-upload-rule-b506bc5",
             "itemCount": 11
           },
           {
             "name": "fanout",
-            "datasetName": "test-upload-fanout",
+            "datasetName": "test-upload-fanout-b506bc5",
             "itemCount": 11
           },
           {
             "name": "e2e",
-            "datasetName": "test-upload-e2e",
+            "datasetName": "test-upload-e2e-b506bc5",
             "itemCount": 17
           },
           {
             "name": "explainability",
-            "datasetName": "test-upload-explainability",
+            "datasetName": "test-upload-explainability-b506bc5",
             "itemCount": 111
           }
         ]
@@ -183,5 +184,5 @@
       }
     }
   ],
-  "generatedAt": "2026-03-25T21:00:31.026Z"
+  "generatedAt": "2026-03-25T21:02:10.193Z"
 }

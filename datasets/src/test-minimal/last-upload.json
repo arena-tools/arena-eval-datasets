@@ -1,0 +1,29 @@
+{
+  "uploadedAt": "2026-03-25T20:59:39.540Z",
+  "boardId": "test-minimal",
+  "mode": "create_new",
+  "commitHash": "c3e38ca",
+  "datasets": [
+    {
+      "name": "rule",
+      "datasetName": "test-minimal-rule-c3e38ca",
+      "itemCount": 2
+    },
+    {
+      "name": "fanout",
+      "datasetName": "test-minimal-fanout-c3e38ca",
+      "itemCount": 2
+    },
+    {
+      "name": "e2e",
+      "datasetName": "test-minimal-e2e-c3e38ca",
+      "itemCount": 2
+    },
+    {
+      "name": "explainability",
+      "datasetName": "test-minimal-explainability-c3e38ca",
+      "itemCount": 3
+    }
+  ],
+  "success": true
+}

@@ -96,28 +96,28 @@
       "datasetNamePrefix": "test-minimal",
       "description": "Minimal test dataset for verifying versioned uploads",
       "lastUpload": {
-        "uploadedAt": "2026-03-25T20:59:39.540Z",
-        "commitHash": "c3e38ca",
+        "uploadedAt": "2026-03-25T21:00:31.024Z",
+        "commitHash": "345f75e",
         "datasets": [
           {
             "name": "rule",
-            "datasetName": "test-minimal-rule-c3e38ca",
-            "itemCount": 2
+            "datasetName": "test-minimal-rule-345f75e",
+            "itemCount": 3
           },
           {
             "name": "fanout",
-            "datasetName": "test-minimal-fanout-c3e38ca",
-            "itemCount": 2
+            "datasetName": "test-minimal-fanout-345f75e",
+            "itemCount": 3
           },
           {
             "name": "e2e",
-            "datasetName": "test-minimal-e2e-c3e38ca",
-            "itemCount": 2
+            "datasetName": "test-minimal-e2e-345f75e",
+            "itemCount": 3
           },
           {
             "name": "explainability",
-            "datasetName": "test-minimal-explainability-c3e38ca",
-            "itemCount": 3
+            "datasetName": "test-minimal-explainability-345f75e",
+            "itemCount": 4
           }
         ]
       }
@@ -183,5 +183,5 @@
       }
     }
   ],
-  "generatedAt": "2026-03-25T20:59:39.541Z"
+  "generatedAt": "2026-03-25T21:00:31.026Z"
 }

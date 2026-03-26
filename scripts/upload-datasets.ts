@@ -170,7 +170,7 @@ async function processBoard(boardDir: string, dryRun: boolean): Promise<void> {
   console.log(`\n--- Board: ${metadata.boardId} (${boardDir}) ---`)
   console.log(`  Prefix: ${metadata.datasetNamePrefix}`)
 
-  const outputs = convertAll(csvText, metadata.boardId)
+  const outputs = convertAll(csvText)
 
   for (const output of outputs) {
     const datasetName = getDatasetName(metadata, output)

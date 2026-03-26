@@ -63,7 +63,7 @@ Each SRC eval CSV is converted into 4 Langfuse datasets:
 
 ## Required CSV columns
 
-`Tab`, `Rule Number`, `Row Index`, `Requirement`, `Element Type`, `Element ID`, `Result`, `Explainability`
+`Board Name`, `Tab`, `Rule Number`, `Row Index`, `Requirement`, `Element Type`, `Element ID`, `Result`, `Explainability`
 
 ## GitHub Actions secrets
 

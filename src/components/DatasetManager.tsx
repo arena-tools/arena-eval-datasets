@@ -257,11 +257,7 @@ export default function DatasetManager() {
 
     f.text().then(text => {
       try {
-        if (!boardId.trim()) {
-          setPreviewError('Enter a Board ID to preview conversion')
-          return
-        }
-        const results = convertAll(text, boardId.trim())
+        const results = convertAll(text)
         setPreview(results)
       } catch (err) {
         setPreviewError(err instanceof Error ? err.message : 'Preview failed')
@@ -283,20 +279,6 @@ export default function DatasetManager() {
     }
   }, [acceptFile])
 
-  // Re-preview when boardId changes
-  useEffect(() => {
-    if (!file || !boardId.trim()) return
-    file.text().then(text => {
-      try {
-        const results = convertAll(text, boardId.trim())
-        setPreview(results)
-        setPreviewError(null)
-      } catch (err) {
-        setPreviewError(err instanceof Error ? err.message : 'Preview failed')
-        setPreview(null)
-      }
-    })
-  }, [boardId, file])
 
   // ── Submit: commit to GitHub + trigger workflow ──
   async function handleSubmit() {

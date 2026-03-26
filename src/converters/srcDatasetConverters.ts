@@ -5,11 +5,12 @@
  * Converts a single source-of-truth SRC results CSV into four Langfuse eval
  * dataset CSVs: rule, fanout, e2e, and explainability.
  *
- * Input CSV columns: Tab, Rule Number, Row Index, Requirement, Element Type,
- * Element ID, Result, Explainability
+ * Input CSV columns: Board Name, Tab, Rule Number, Row Index, Requirement,
+ * Element Type, Element ID, Result, Explainability
  */
 
 export interface SrcRow {
+  'Board Name': string
   Tab: string
   'Rule Number': string
   'Row Index': string
@@ -82,7 +83,8 @@ function toCsv(headers: string[], rows: Record<string, string>[]): string {
 
 // ---------- E2E Dataset (simple: rule text + overall status) ----------
 
-export function createE2eDataset(rows: SrcRow[], boardId: string): DatasetOutput {
+export function createE2eDataset(rows: SrcRow[]): DatasetOutput {
+  const boardId = rows[0]?.['Board Name'] || ''
   const parentRules = new Map<string, { requirement: string; result: string }>()
   const ruleOrder: string[] = []
 
@@ -118,7 +120,8 @@ export function createE2eDataset(rows: SrcRow[], boardId: string): DatasetOutput
 
 // ---------- Fanout Dataset ----------
 
-export function createFanoutDataset(rows: SrcRow[], boardId: string): DatasetOutput {
+export function createFanoutDataset(rows: SrcRow[]): DatasetOutput {
+  const boardId = rows[0]?.['Board Name'] || ''
   const parentRules = new Map<number, string>()
   const fanoutByParent = new Map<number, string[]>()
 
@@ -163,7 +166,8 @@ export function createFanoutDataset(rows: SrcRow[], boardId: string): DatasetOut
 
 // ---------- Rule Dataset (rule + subrule_elements + per-subrule statuses) ----------
 
-export function createRuleDataset(rows: SrcRow[], boardId: string): DatasetOutput {
+export function createRuleDataset(rows: SrcRow[]): DatasetOutput {
+  const boardId = rows[0]?.['Board Name'] || ''
   const parentRules = new Map<number, { requirement: string; status: string }>()
   const fanoutItems = new Map<number, { id: string; status: string }[]>()
 
@@ -212,7 +216,8 @@ export function createRuleDataset(rows: SrcRow[], boardId: string): DatasetOutpu
 
 // ---------- Explainability Dataset ----------
 
-export function createExplainabilityDataset(rows: SrcRow[], boardId: string): DatasetOutput {
+export function createExplainabilityDataset(rows: SrcRow[]): DatasetOutput {
+  const boardId = rows[0]?.['Board Name'] || ''
   const parentRules = new Map<number, string>()
   const parentExplainability = new Map<number, {
     elementType: string; elementId: string; result: string; explainability: string
@@ -352,11 +357,11 @@ function parseCsvLine(line: string): string[] {
 
 // ---------- Convert All ----------
 
-export function convertAll(csvText: string, boardId: string): DatasetOutput[] {
+export function convertAll(csvText: string): DatasetOutput[] {
   const rows = parseCsv(csvText)
   if (rows.length === 0) throw new Error('No data rows found in CSV')
 
-  const requiredColumns = ['Rule Number', 'Row Index', 'Requirement', 'Result']
+  const requiredColumns = ['Board Name', 'Rule Number', 'Row Index', 'Requirement', 'Result']
   const headers = Object.keys(rows[0])
   const missing = requiredColumns.filter(c => !headers.includes(c))
   if (missing.length > 0) {
@@ -364,9 +369,9 @@ export function convertAll(csvText: string, boardId: string): DatasetOutput[] {
   }
 
   return [
-    createRuleDataset(rows, boardId),
-    createFanoutDataset(rows, boardId),
-    createE2eDataset(rows, boardId),
-    createExplainabilityDataset(rows, boardId),
+    createRuleDataset(rows),
+    createFanoutDataset(rows),
+    createE2eDataset(rows),
+    createExplainabilityDataset(rows),
   ]
 }

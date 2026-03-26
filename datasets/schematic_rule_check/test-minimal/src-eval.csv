@@ -1,8 +1,0 @@
-Tab,Rule Number,Row Index,Requirement,Element Type,Element ID,Result,Explainability
-Rules,1,1,All capacitors must have voltage ratings at least 20% above rail voltage.,,,Yes - Passed,"All capacitors meet the voltage rating requirement."
-Rules,1.1,1.1,,Component,C100,Yes - Passed,"C100 on 3V3 rail (3.0V) has 10V rating, exceeding the 3.6V minimum."
-Rules,1.2,1.2,,Component,C101,No - Failed,"C101 on 5V rail has 5V rating, below the required 6.0V minimum."
-Rules,2,2,All power nets must have decoupling capacitors within 5mm of IC pins.,,,Yes - Passed,"Decoupling capacitors are properly placed."
-Rules,2.1,2.1,,Net,VCC_3V3,Yes - Passed,"VCC_3V3 has C100 placed 2mm from U1 pin 1."
-Rules,3,3,All ICs must have bypass capacitors on every power pin.,,,No - Failed,"U2 is missing a bypass capacitor on pin 8 (VDD)."
-Rules,3.1,3.1,,Pin,U2_VDD,No - Failed,"Pin 8 (VDD) of U2 has no bypass capacitor within 10mm."

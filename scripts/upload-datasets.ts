@@ -28,38 +28,6 @@ interface Metadata {
   createdAt?: string
 }
 
-interface UploadReceipt {
-  uploadedAt: string
-  boardId: string
-  commitHash: string
-  datasets: {
-    name: string
-    datasetName: string
-    itemCount: number
-  }[]
-  success: boolean
-  error?: string
-}
-
-interface UploadHistoryEntry {
-  uploadedAt: string
-  commitHash: string
-  datasets: { name: string; datasetName: string; itemCount: number }[]
-}
-
-interface ManifestEntry {
-  boardId: string
-  directory: string
-  datasetNamePrefix: string
-  description?: string
-  author?: string
-  uploadHistory: UploadHistoryEntry[]
-}
-
-interface Manifest {
-  datasets: ManifestEntry[]
-  generatedAt: string
-}
 
 // ---------------------------------------------------------------------------
 // Config
@@ -167,16 +135,6 @@ async function clearDatasetItems(datasetName: string): Promise<number> {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/** Get the short git commit hash of HEAD */
-async function getCommitHash(): Promise<string> {
-  const { execSync } = await import('child_process')
-  return execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim()
-}
-
-// ---------------------------------------------------------------------------
 // Core logic
 // ---------------------------------------------------------------------------
 
@@ -205,16 +163,14 @@ function getDatasetName(metadata: Metadata, output: DatasetOutput): string {
   return `${metadata.datasetNamePrefix}-${output.name}`
 }
 
-async function processBoard(boardDir: string, dryRun: boolean, commitHash: string): Promise<UploadReceipt> {
+async function processBoard(boardDir: string, dryRun: boolean): Promise<void> {
   const metadata = readMetadata(boardDir)
   const csvText = readCsv(boardDir)
 
   console.log(`\n--- Board: ${metadata.boardId} (${boardDir}) ---`)
   console.log(`  Prefix: ${metadata.datasetNamePrefix}`)
-  console.log(`  Commit: ${commitHash}`)
 
   const outputs = convertAll(csvText, metadata.boardId)
-  const receiptDatasets: UploadReceipt['datasets'] = []
 
   for (const output of outputs) {
     const datasetName = getDatasetName(metadata, output)
@@ -248,70 +204,7 @@ async function processBoard(boardDir: string, dryRun: boolean, commitHash: strin
     } else {
       console.log(`    -> (dry run, skipped upload)`)
     }
-
-    receiptDatasets.push({ name: output.name, datasetName, itemCount: output.rows.length })
   }
-
-  const receipt: UploadReceipt = {
-    uploadedAt: new Date().toISOString(),
-    boardId: metadata.boardId,
-    commitHash,
-    datasets: receiptDatasets,
-    success: true,
-  }
-
-  if (!dryRun) {
-    // Append to upload history
-    const historyPath = path.join(DATASETS_DIR, boardDir, 'upload-history.json')
-    let history: UploadHistoryEntry[] = []
-    if (fs.existsSync(historyPath)) {
-      try { history = JSON.parse(fs.readFileSync(historyPath, 'utf-8')) } catch { /* start fresh */ }
-    }
-    history.push({
-      uploadedAt: receipt.uploadedAt,
-      commitHash: receipt.commitHash,
-      datasets: receipt.datasets,
-    })
-    fs.writeFileSync(historyPath, JSON.stringify(history, null, 2) + '\n')
-    console.log(`  History updated at ${historyPath}`)
-  }
-
-  return receipt
-}
-
-function updateManifest(): void {
-  const boardDirs = listBoardDirs()
-  const entries: ManifestEntry[] = []
-
-  for (const dir of boardDirs) {
-    const metadata = readMetadata(dir)
-    const entry: ManifestEntry = {
-      boardId: metadata.boardId,
-      directory: dir,
-      datasetNamePrefix: metadata.datasetNamePrefix,
-      description: metadata.description,
-      author: metadata.author,
-    }
-
-    const historyPath = path.join(DATASETS_DIR, dir, 'upload-history.json')
-    if (fs.existsSync(historyPath)) {
-      try {
-        entry.uploadHistory = JSON.parse(fs.readFileSync(historyPath, 'utf-8'))
-      } catch {
-        // skip malformed history
-      }
-    }
-
-    entries.push(entry)
-  }
-
-  const manifest: Manifest = {
-    datasets: entries,
-    generatedAt: new Date().toISOString(),
-  }
-
-  fs.writeFileSync(path.join(DATASETS_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n')
-  console.log(`\nManifest updated with ${entries.length} dataset(s)`)
 }
 
 // ---------------------------------------------------------------------------
@@ -412,35 +305,15 @@ Options:
     process.exit(0)
   }
 
-  const commitHash = await getCommitHash()
-  console.log(`Commit: ${commitHash}`)
-
   let hasErrors = false
   for (const dir of boardDirs) {
     try {
-      await processBoard(dir, dryRun, commitHash)
+      await processBoard(dir, dryRun)
     } catch (err) {
       hasErrors = true
       console.error(`\nERROR processing ${dir}:`, err instanceof Error ? err.message : err)
-
-      // Append error to upload history
-      if (!dryRun) {
-        const historyPath = path.join(DATASETS_DIR, dir, 'upload-history.json')
-        let history: UploadHistoryEntry[] = []
-        if (fs.existsSync(historyPath)) {
-          try { history = JSON.parse(fs.readFileSync(historyPath, 'utf-8')) } catch { /* start fresh */ }
-        }
-        history.push({
-          uploadedAt: new Date().toISOString(),
-          commitHash,
-          datasets: [],
-        })
-        fs.writeFileSync(historyPath, JSON.stringify(history, null, 2) + '\n')
-      }
     }
   }
-
-  updateManifest()
 
   if (hasErrors) {
     console.error('\nSome boards failed. Check output above.')

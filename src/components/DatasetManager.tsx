@@ -6,24 +6,16 @@ import './DatasetManager.css'
 // Types
 // ---------------------------------------------------------------------------
 
-interface UploadHistoryEntry {
-  uploadedAt: string
-  commitHash: string
-  datasets: { name: string; datasetName: string; itemCount: number }[]
-}
-
 interface ManifestEntry {
   boardId: string
   directory: string
   datasetNamePrefix: string
   description?: string
   author?: string
-  uploadHistory: UploadHistoryEntry[]
 }
 
 interface Manifest {
   datasets: ManifestEntry[]
-  generatedAt: string
 }
 
 interface WorkflowRun {
@@ -460,42 +452,28 @@ export default function DatasetManager() {
               </div>
             ) : (
               <div className="dm-dataset-list">
-                {manifest.datasets.map(entry => {
-                  const history = entry.uploadHistory || []
-                  const lastUpload = history.length > 0 ? history[history.length - 1] : null
-
-                  return (
-                    <div key={entry.directory} className="dm-dataset-row">
-                      <div className="dm-dataset-info">
-                        <div className="dm-dataset-title">{entry.boardId}</div>
-                        <div className="dm-dataset-meta">
-                          <span>Prefix: {entry.datasetNamePrefix}</span>
-                          {entry.description && <span>{entry.description}</span>}
-                          {entry.author && <span>by {entry.author}</span>}
-                          {lastUpload && (
-                            <span>
-                              Last upload: {new Date(lastUpload.uploadedAt).toLocaleDateString()} —{' '}
-                              {lastUpload.datasets.map(d => `${d.name}: ${d.itemCount}`).join(', ')} items
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="dm-dataset-status">
-                        <span className={`dm-status-badge ${lastUpload ? 'success' : 'never'}`}>
-                          {lastUpload ? 'Uploaded' : 'Never uploaded'}
-                        </span>
-                        {patValid && (
-                          <button
-                            className="dm-btn dm-btn-secondary"
-                            onClick={() => handleReUpload(entry.directory)}
-                          >
-                            Re-upload
-                          </button>
-                        )}
+                {manifest.datasets.map(entry => (
+                  <div key={entry.directory} className="dm-dataset-row">
+                    <div className="dm-dataset-info">
+                      <div className="dm-dataset-title">{entry.boardId}</div>
+                      <div className="dm-dataset-meta">
+                        <span>Prefix: {entry.datasetNamePrefix}</span>
+                        {entry.description && <span>{entry.description}</span>}
+                        {entry.author && <span>by {entry.author}</span>}
                       </div>
                     </div>
-                  )
-                })}
+                    <div className="dm-dataset-status">
+                      {patValid && (
+                        <button
+                          className="dm-btn dm-btn-secondary"
+                          onClick={() => handleReUpload(entry.directory)}
+                        >
+                          Re-upload
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </>

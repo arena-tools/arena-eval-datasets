@@ -177,14 +177,21 @@ arena-eval-datasets-govcloud/
     datasheet_lookup/questions.csv
     aggregates.json
   .github/workflows/
-    upload.yml
+    upload-schematic-rule-check.yml          # uploads private datasets on push
+    sync-public-datasets.yml                 # uploads public datasets on submodule bump
 ```
 
-### Example workflow
+### Upload private datasets (on push)
 
-The private repo runs scripts from the submodule, uploading both public and private datasets to the govcloud Langfuse instance:
+Same pattern as the public repo, but using the govcloud runner and secrets. `DATASETS_ROOT` points at the private repo's own `datasets/` folder:
 
 ```yaml
+# .github/workflows/upload-schematic-rule-check.yml
+on:
+  push:
+    branches: [main]
+    paths: ['datasets/schematic_rule_check/**']
+
 jobs:
   upload:
     runs-on: self-hosted-govcloud
@@ -192,25 +199,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - run: npm ci --prefix shared
-
-      # Upload public datasets (from submodule) to govcloud Langfuse
-      - name: Upload public SRC datasets
-        run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
-        env:
-          DATASETS_ROOT: ${{ github.workspace }}/shared/datasets
-          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
-          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
-
-      # Upload private datasets to govcloud Langfuse
-      - name: Upload private SRC datasets
-        run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
+      - run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
         env:
           DATASETS_ROOT: ${{ github.workspace }}/datasets
           LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
@@ -218,4 +211,35 @@ jobs:
           LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
 ```
 
-The same scripts, same conversion logic, different runner, different secrets, different Langfuse instance. The `DATASETS_ROOT` env var controls which datasets folder to read from.
+### Upload public datasets (on submodule bump)
+
+When you bump the submodule to pick up new public datasets, a separate workflow uploads them to govcloud. `DATASETS_ROOT` points at the submodule's `datasets/` folder:
+
+```yaml
+# .github/workflows/sync-public-datasets.yml
+on:
+  push:
+    branches: [main]
+    paths: ['shared']
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: self-hosted-govcloud
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci --prefix shared
+      - run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
+        env:
+          DATASETS_ROOT: ${{ github.workspace }}/shared/datasets
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+```
+
+Same scripts, same conversion logic. The runner, secrets, and `DATASETS_ROOT` determine where data comes from and where it goes.

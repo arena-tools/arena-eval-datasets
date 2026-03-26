@@ -226,6 +226,11 @@ on:
 jobs:
   sync:
     runs-on: self-hosted-govcloud
+    env:
+      DATASETS_ROOT: ${{ github.workspace }}/shared/datasets
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -235,11 +240,8 @@ jobs:
           node-version: '20'
       - run: npm ci --prefix shared
       - run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
-        env:
-          DATASETS_ROOT: ${{ github.workspace }}/shared/datasets
-          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
-          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+      - run: npx tsx shared/scripts/upload-datasheet-lookup.ts --all
+      - run: npx tsx shared/scripts/upload-aggregates.ts --all
 ```
 
 Same scripts, same conversion logic. The runner, secrets, and `DATASETS_ROOT` determine where data comes from and where it goes.

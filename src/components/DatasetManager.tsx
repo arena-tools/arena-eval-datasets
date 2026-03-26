@@ -290,8 +290,8 @@ export default function DatasetManager() {
       setStatusMsg({ type: 'error', text: 'GitHub repo not configured (VITE_GITHUB_OWNER / VITE_GITHUB_REPO)' })
       return
     }
-    if (!file || !boardId.trim() || !datasetPrefix.trim()) {
-      setStatusMsg({ type: 'error', text: 'Please fill in all required fields' })
+    if (!file || !preview || !boardId.trim() || !datasetPrefix.trim()) {
+      setStatusMsg({ type: 'error', text: 'Please fill in all required fields and ensure the CSV passes validation' })
       return
     }
 
@@ -550,7 +550,7 @@ export default function DatasetManager() {
                 <button
                   className="dm-submit-btn"
                   onClick={handleSubmit}
-                  disabled={submitting || !file || !boardId.trim() || !datasetPrefix.trim() || !patValid}
+                  disabled={submitting || !preview || !boardId.trim() || !datasetPrefix.trim() || !patValid}
                 >
                   {submitting ? 'Committing...' : 'Commit & Upload'}
                 </button>

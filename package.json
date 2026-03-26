@@ -1,0 +1,17 @@
+{
+  "name": "arena-eval-datasets",
+  "version": "1.0.0",
+  "description": "Git-driven eval dataset management for Langfuse",
+  "type": "module",
+  "scripts": {
+    "upload:src": "tsx scripts/upload-schematic-rule-check.ts",
+    "upload:datasheet": "tsx scripts/upload-datasheet-lookup.ts",
+    "upload:aggregates": "tsx scripts/upload-aggregates.ts",
+    "validate:src": "tsx scripts/validate-schematic-rule-check.ts",
+    "validate:datasheet": "tsx scripts/validate-datasheet-lookup.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.2.2"
+  }
+}

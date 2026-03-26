@@ -1,0 +1,10 @@
+[
+  {
+    "name": "all-questions",
+    "mode": "datasheet_lookup",
+    "sources": [
+      "chart_questions.csv",
+      "questions_without_charts.csv"
+    ]
+  }
+]

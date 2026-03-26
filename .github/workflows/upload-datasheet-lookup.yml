@@ -1,0 +1,64 @@
+name: Upload Datasheet Lookup Datasets to Langfuse
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'datasets/datasheet_lookup/**'
+  workflow_dispatch:
+    inputs:
+      file:
+        description: 'CSV filename to upload (or "all")'
+        required: true
+        default: 'all'
+      dry_run:
+        description: 'Preview without uploading'
+        type: boolean
+        default: false
+
+jobs:
+  upload:
+    runs-on: self-hosted-runner
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run dataset upload (push trigger)
+        if: github.event_name == 'push'
+        env:
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+        run: npx tsx scripts/upload-datasheet-lookup.ts --changed
+
+      - name: Run dataset upload (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.file }}" = "all" ]; then
+            ARGS="--all"
+          else
+            ARGS="--file ${{ inputs.file }}"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          npx tsx scripts/upload-datasheet-lookup.ts $ARGS

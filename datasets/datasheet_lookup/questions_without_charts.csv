@@ -1,0 +1,161 @@
+mpn,question,answer,answer_accuracy,question_category,question_category_2,notes
+BZX84C68LT1G,What type of device is the BZX84C68LT1G?,It is a Zener voltage regulator diode.,exact,component_identification,text,Straight feature description
+BZX84C68LT1G,What is the nominal Zener voltage of the BZX84C68LT1G?,The nominal Zener voltage is 68 V.,exact,electrical_specs,table,Direct lookup from electrical characteristics table
+BZX84C68LT1G,What is the minimum and maximum Zener voltage for the BZX84C68LT1G?,The Zener voltage ranges from 64 V minimum to 72 V maximum.,exact,electrical_specs,table,Requires correct row identification
+BZX84C68LT1G,At what test current is the Zener voltage specified for the BZX84C68LT1G?,The Zener voltage is specified at 2 mA.,exact,electrical_conditions,table,Must choose correct test-current section
+BZX84C68LT1G,What package type is used for the BZX84C68LT1G?,The device uses a SOT-23 surface-mount package.,exact,packaging,text,Found in general description
+BZX84C68LT1G,What is the maximum power dissipation on an FR-5 board?,The maximum power dissipation is 250 mW at 25°C.,exact,absolute_maximum_ratings,table,From Maximum Ratings table
+BZX84C68LT1G,What is the junction temperature operating range?,The junction temperature range is −65°C to +150°C.,exact,thermal_specs,table,Standard absolute rating
+BZX84C68LT1G,What is the maximum reverse leakage current for this device?,The maximum reverse leakage current is 0.05 µA at the specified reverse voltage.,exact,electrical_specs,table,Sensitive numeric extraction
+BZX84C68LT1G,What is the marking code for the BZX84C68LT1G?,The device marking code is Y20.,exact,part_marking,table,Easy to hallucinate if retrieval fails
+BZX84C68LT1G,Which pin is the cathode on the SOT-23 package?,Pin 3 is the cathode.,exact,pinout,text,Requires pinout mapping
+BZX84C68LT1G,Which pin has no internal connection?,Pin 2 has no internal connection.,exact,pinout,text,From pinout description
+BZX84C68LT1G,What board materials are referenced for thermal ratings?,FR-5 and alumina substrates are referenced.,exact,thermal_specs,text,Mentioned in rating notes
+BZX84C68LT1G,What is the maximum soldering temperature and duration?,The maximum soldering temperature is 260°C for 10 seconds.,exact,assembly_constraints,text,Often missed by LLMs
+BZX84C68LT1G,Is the device RoHS compliant?,"Yes, it is Pb-free and RoHS compliant.",exact,compliance,text,Compliance section
+BZX84C68LT1G,What ESD rating does this device meet?,It meets Class 3 ESD (>16 kV) per the Human Body Model.,exact,reliability,text,Feature bullet
+BZX84C68LT1G,What is the maximum Zener impedance for the BZX84C68LT1G?,The maximum Zener impedance is 240 Ω.,exact,electrical_specs,table,Requires correct impedance column
+BZX84C68LT1G,What is the maximum capacitance of the device?,The maximum capacitance is 35 pF at VR = 0 and 1 MHz.,exact,electrical_characteristics,table,Table-driven numeric
+BZX84C68LT1G,What typical applications are mentioned for this Zener diode series?,"Applications include cellular phones, handheld portables, and high-density PC boards.",exact,application_context,text,Feature paragraph
+BZX84C68LT1G,How is the cathode identified on the package?,The cathode is identified by a polarity band.,exact,mechanical_features,text,Mechanical characteristics
+BZX84C68LT1G,Are automotive-qualified versions available for this part family?,"Yes, SZ-prefixed versions are AEC-Q101 qualified and PPAP capable.",exact,variant_handling,text,Conditional variant logic
+BZX84C68LT1G,How does Zener voltage typically change with current for high-voltage parts?,The Zener voltage increases slightly as Zener current increases.,estimation,electrical_behavior,chart,Derived from typical characteristic curves
+BZX84C68LT1G,How does temperature affect Zener voltage around 68 V nominal?,The Zener voltage has a positive temperature coefficient at higher voltages.,estimation,thermal_behavior,chart,Requires interpretation of TC curves
+BZX84C68LT1G,Is the capacitance expected to be high or low for a 68 V Zener diode?,The capacitance is relatively low compared to low-voltage Zeners.,estimation,comparative_behavior,chart,Trend-based reasoning
+BZX84C68LT1G,Does leakage current increase with temperature?,"Yes, leakage current increases significantly with temperature.",estimation,thermal_behavior,chart,From leakage vs temperature curves
+BZX84C68LT1G,Is the device intended for space-constrained PCB designs?,"Yes, it is designed for high-density and space-limited PCB applications.",exact,application_context,text,Introductory description
+BSS169H6327XTSA1,What type of transistor is the BSS169?,It is an N-channel depletion-mode MOSFET.,exact,component_identification,text,Found in feature list
+BSS169H6327XTSA1,Is the BSS169 a depletion-mode or enhancement-mode device?,It is a depletion-mode device.,exact,device_behavior,text,Common confusion point
+BSS169H6327XTSA1,What package type is used for the BSS169?,The device is packaged in a PG-SOT-23 package.,exact,packaging,text,Package naming matters
+BSS169H6327XTSA1,What is the maximum drain-source voltage rating of the BSS169?,The maximum drain-source voltage is 100 V.,exact,absolute_maximum_ratings,table,Product summary + ratings
+BSS169H6327XTSA1,What is the continuous drain current at 25°C ambient temperature?,The continuous drain current is 0.17 A at 25°C.,exact,absolute_maximum_ratings,table,Straight numeric lookup
+BSS169H6327XTSA1,What is the continuous drain current at 70°C ambient temperature?,The continuous drain current is 0.14 A at 70°C.,exact,absolute_maximum_ratings,table,Tests temperature-conditioned values
+BSS169H6327XTSA1,What is the pulsed drain current rating?,The pulsed drain current is 0.68 A.,exact,absolute_maximum_ratings,table,Often hallucinated
+BSS169H6327XTSA1,What is the maximum allowable gate-source voltage?,The maximum gate-source voltage is ±20 V.,exact,absolute_maximum_ratings,table,Critical reliability spec
+BSS169H6327XTSA1,What is the total power dissipation at 25°C?,The total power dissipation is 0.36 W at 25°C.,exact,thermal_specs,table,From maximum ratings
+BSS169H6327XTSA1,What is the operating junction temperature range?,The operating junction temperature range is −55°C to +150°C.,exact,thermal_specs,table,Standard but important
+BSS169H6327XTSA1,What is the junction-to-ambient thermal resistance?,The junction-to-ambient thermal resistance is 250 K/W.,exact,thermal_specs,table,Minimal footprint condition
+BSS169H6327XTSA1,What is the drain-source breakdown voltage V(BR)DSS?,The breakdown voltage is 100 V at VGS = −10 V and ID = 250 µA.,exact,electrical_specs,table,Condition-sensitive
+BSS169H6327XTSA1,What is the gate threshold voltage range?,The gate threshold voltage ranges from −2.9 V to −1.8 V.,exact,electrical_specs,table,Depletion-mode signature
+BSS169H6327XTSA1,What is the typical gate threshold voltage?,The typical gate threshold voltage is −2.2 V.,exact,electrical_specs,table,Precise value extraction
+BSS169H6327XTSA1,What is the maximum drain-source on-resistance at VGS = 0 V?,The maximum RDS(on) is 12 Ω at VGS = 0 V.,exact,electrical_specs,table,Easy to misread units
+BSS169H6327XTSA1,What is the typical RDS(on) at VGS = 0 V and ID = 0.05 A?,The typical RDS(on) is 5.3 Ω.,exact,electrical_specs,table,Requires correct test conditions
+BSS169H6327XTSA1,What is the minimum on-state drain current IDSS?,The minimum IDSS is 90 mA at VGS = 0 V.,exact,electrical_specs,table,Confusable with leakage
+BSS169H6327XTSA1,What is the maximum gate-source leakage current?,The maximum gate-source leakage current is 10 nA.,exact,electrical_specs,table,Very small value — good hallucination test
+BSS169H6327XTSA1,"What are the typical input, output, and reverse transfer capacitances?","Typical Ciss is 51 pF, Coss is 9 pF, and Crss is 4 pF.",exact,dynamic_characteristics,table,Multi-value extraction
+BSS169H6327XTSA1,What is the typical total gate charge?,The typical total gate charge is 2.1 nC.,exact,dynamic_characteristics,table,Gate-charge specific
+BSS169H6327XTSA1,What is the typical gate plateau voltage?,The typical gate plateau voltage is −0.43 V.,exact,dynamic_characteristics,table,Negative value traps models
+BSS169H6327XTSA1,What is the maximum reverse diode continuous forward current?,The maximum continuous forward current is 0.19 A.,exact,body_diode,table,Reverse diode section
+BSS169H6327XTSA1,What is the typical forward voltage of the body diode at 25°C?,The typical forward voltage is 0.82 V.,exact,body_diode,table,Condition-based
+BSS169H6327XTSA1,What is the reverse recovery time of the diode?,The typical reverse recovery time is 20.5 ns.,exact,body_diode,table,Fast switching parameter
+BSS169H6327XTSA1,Is the device AEC-Q101 qualified?,"Yes, the BSS169 is qualified according to AEC-Q101.",exact,compliance,text,Automotive relevance
+BSS169H6327XTSA1,Is the device RoHS compliant?,"Yes, it is Pb-free and RoHS compliant.",exact,compliance,text,Compliance verification
+BSS169H6327XTSA1,What ESD classification does the BSS169 have?,It is classified as ESD Class 0 according to JESD22-A114 HBM.,exact,reliability,table,Very easy to hallucinate
+BSS169H6327XTSA1,How does drain current change as gate-source voltage increases?,Drain current increases as gate-source voltage becomes more positive.,estimation,electrical_behavior,chart,From transfer characteristic
+BSS169H6327XTSA1,How does RDS(on) change with increasing junction temperature?,RDS(on) increases as junction temperature increases.,estimation,thermal_behavior,chart,Trend-based interpretation
+BSS169H6327XTSA1,Does leakage current increase at higher temperatures?,"Yes, leakage current increases significantly with temperature.",estimation,thermal_behavior,chart,Derived from temperature plots
+BSS169H6327XTSA1,How does breakdown voltage vary with temperature?,Breakdown voltage increases slightly with increasing temperature.,estimation,electrical_behavior,chart,Requires interpretation
+BSS169H6327XTSA1,"Is the device suitable for high-voltage, low-current switching?","Yes, it is suitable due to its 100 V rating and low drain current capability.",estimation,application_context,mixed,Reasoned from specs
+LNJ337W83RA,What type of component is the LNJ337W83RA?,It is a high-brightness surface-mount chip LED.,exact,component_identification,text,From title and description
+LNJ337W83RA,What LED color is specified for the LNJ337W83RA?,The specified lighting color is yellow green.,exact,optical_characteristics,text,Color section
+LNJ337W83RA,What is the maximum power dissipation rating?,The maximum power dissipation is 55 mW.,exact,absolute_maximum_ratings,table,Absolute Maximum Ratings table
+LNJ337W83RA,What is the maximum continuous forward current?,The maximum continuous forward current is 20 mA.,exact,absolute_maximum_ratings,table,Straight numeric lookup
+LNJ337W83RA,What is the maximum pulse forward current and under what conditions?,The maximum pulse forward current is 60 mA at 10% duty and 1 ms pulse width.,exact,absolute_maximum_ratings,table,Requires reading footnote
+LNJ337W83RA,What is the maximum reverse voltage rating?,The maximum reverse voltage is 4 V.,exact,absolute_maximum_ratings,table,Often confused with forward voltage
+LNJ337W83RA,What is the operating ambient temperature range?,The operating ambient temperature range is −30°C to +85°C.,exact,thermal_specs,table,Environmental limits
+LNJ337W83RA,What is the storage temperature range?,The storage temperature range is −40°C to +100°C.,exact,thermal_specs,table,Storage vs operating distinction
+LNJ337W83RA,What is the typical forward voltage at 5 mA?,The typical forward voltage at 5 mA is 2.30 V.,exact,electrical_specs,table,Electro-optical characteristics
+LNJ337W83RA,What is the minimum forward voltage at 5 mA?,The minimum forward voltage at 5 mA is 1.95 V.,exact,electrical_specs,table,Tests min/typ separation
+LNJ337W83RA,What is the typical luminous intensity at 5 mA?,The typical luminous intensity is 7.5 mcd.,exact,optical_characteristics,table,Table-driven optical spec
+LNJ337W83RA,What is the minimum and maximum luminous intensity at 5 mA?,The luminous intensity ranges from 4.0 mcd to 28.0 mcd.,exact,optical_characteristics,table,Wide tolerance range
+LNJ337W83RA,What is the peak emission wavelength?,The peak emission wavelength is 575 nm.,exact,optical_characteristics,table,Precise wavelength extraction
+LNJ337W83RA,What is the dominant emission wavelength range?,The dominant wavelength ranges from 566 nm to 576 nm.,exact,optical_characteristics,table,Requires reading min/max columns
+LNJ337W83RA,What is the spectral half bandwidth at 5 mA?,The spectral half bandwidth is 20 nm.,exact,optical_characteristics,table,Single-value optical spec
+LNJ337W83RA,What is the maximum reverse current at the rated reverse voltage?,The maximum reverse current is 100 µA at 4 V.,exact,electrical_specs,table,Easy hallucination target
+LNJ337W83RA,What tolerance applies to luminous intensity measurements?,The luminous intensity measurement tolerance is ±20%.,exact,measurement_notes,text,Footnote detail
+LNJ337W83RA,What tolerance applies to dominant wavelength measurements?,The dominant wavelength measurement tolerance is ±2 nm.,exact,measurement_notes,text,Another footnote-based question
+LNJ337W83RA,Which pin is the anode?,Pin 1 is the anode.,exact,pinout,text,Package diagram labeling
+LNJ337W83RA,Which pin is the cathode?,Pin 2 is the cathode.,exact,pinout,text,Complement to anode question
+LNJ337W83RA,How is polarity indicated on the package?,Polarity is indicated by an anode mark on the package.,exact,mechanical_features,text,Mechanical drawing
+LNJ337W83RA,Is electrode projection included in the package dimensions?,"No, electrode projection is not included in the package dimensions.",exact,mechanical_specs,text,Note under package drawing
+LNJ337W83RA,What solder thickness range is recommended?,The recommended solder thickness is 0.10 mm to 0.15 mm.,exact,assembly_constraints,text,Manufacturing guidance
+LNJ337W83RA,Is this LED intended for general-purpose applications by default?,"Yes, it is intended for general applications unless otherwise specified.",exact,application_context,text,Usage disclaimer
+LNJ337W83RA,Is the LED suitable for life-support or safety-critical systems without approval?,"No, it requires prior consultation for such applications.",exact,compliance,text,Safety disclaimer section
+LNJ337W83RA,Does luminous intensity scale linearly with forward current?,Luminous intensity generally increases as forward current increases.,estimation,optical_behavior,mixed,"Reasoned from LED behavior, not explicitly charted"
+LNJ337W83RA,Would exceeding pulse current limits risk device damage?,"Yes, exceeding pulse current limits may cause damage or reliability issues.",estimation,reliability,text,Inferred from absolute max warnings
+CSD19532Q5B,What type of device is the CSD19532Q5B?,It is a 100 V N-channel NexFET™ power MOSFET.,exact,component_identification,text,Title and description
+CSD19532Q5B,What is the maximum drain-to-source voltage rating?,The maximum drain-to-source voltage is 100 V.,exact,absolute_maximum_ratings,table,Product summary and abs max table
+CSD19532Q5B,What package type is used for this device?,It is packaged in a SON 5 mm × 6 mm (VSON-CLIP) package.,exact,packaging,text,Features + package info
+CSD19532Q5B,What is the typical RDS(on) at VGS = 10 V?,The typical RDS(on) is 4 mΩ at VGS = 10 V.,exact,electrical_specs,table,Product summary
+CSD19532Q5B,What is the typical RDS(on) at VGS = 6 V?,The typical RDS(on) is 4.6 mΩ at VGS = 6 V.,exact,electrical_specs,table,Product summary
+CSD19532Q5B,What is the gate threshold voltage?,The typical gate threshold voltage is 2.6 V.,exact,electrical_specs,table,VGS(th) in summary
+CSD19532Q5B,What is the total gate charge at VGS = 10 V?,The typical total gate charge is 48 nC.,exact,dynamic_characteristics,table,Qg (10 V)
+CSD19532Q5B,What is the gate-to-drain charge (Qgd)?,The typical gate-to-drain charge is 8.7 nC.,exact,dynamic_characteristics,table,Qgd
+CSD19532Q5B,What is the continuous drain current rating at TC = 25 °C (silicon-limited)?,The continuous drain current is 140 A.,exact,absolute_maximum_ratings,table,Silicon-limited ID
+CSD19532Q5B,What is the pulsed drain current rating?,The pulsed drain current rating is 400 A.,exact,absolute_maximum_ratings,table,IDM
+CSD19532Q5B,What is the operating junction temperature range?,The operating junction temperature range is −55 °C to +150 °C.,exact,thermal_specs,table,"TJ, Tstg"
+CSD19532Q5B,What is the typical junction-to-case thermal resistance?,The typical junction-to-case thermal resistance is 0.8 °C/W.,exact,thermal_specs,table,RθJC
+CSD19532Q5B,"What is the junction-to-ambient thermal resistance on a 1-inch², 2-oz Cu pad?",The junction-to-ambient thermal resistance is typically 50 °C/W.,exact,thermal_specs,table,RθJA condition-specific
+CSD19532Q5B,Is the device avalanche rated?,"Yes, the device is avalanche rated.",exact,reliability,text,Features list
+CSD19532Q5B,What is the single-pulse avalanche energy rating?,The single-pulse avalanche energy rating is 274 mJ.,exact,reliability,table,EAS
+CSD19532Q5B,What applications are listed for this MOSFET?,Applications include synchronous rectification in DC-DC converters and motor control.,exact,application_context,text,Applications section
+CSD19532Q5B,What is the maximum gate-to-source voltage rating?,The maximum gate-to-source voltage is ±20 V.,exact,absolute_maximum_ratings,table,VGS limit
+CSD19532Q5B,What is the typical input capacitance (Ciss)?,The typical input capacitance is 3700 pF.,exact,dynamic_characteristics,table,Ciss
+CSD19532Q5B,What is the typical output capacitance (Coss)?,The typical output capacitance is 706 pF.,exact,dynamic_characteristics,table,Coss
+CSD19532Q5B,How does RDS(on) change with increasing gate-to-source voltage?,RDS(on) decreases as gate-to-source voltage increases.,estimation,electrical_behavior,chart,From RDS(on) vs VGS curves
+CSD19532Q5B,How does threshold voltage vary with temperature?,Threshold voltage decreases as temperature increases.,estimation,thermal_behavior,chart,From VGS(th) vs temperature plot
+CSD19532Q5B,Does on-state resistance increase or decrease with temperature?,On-state resistance increases with temperature.,estimation,thermal_behavior,chart,Normalized RDS(on) vs temperature
+CSD19532Q5B,Is the device RoHS compliant?,"Yes, the device is RoHS compliant and halogen free.",exact,compliance,text,Features + package addendum
+CSD19532Q5B,What reel quantity is standard for the main orderable part?,The standard reel quantity is 2500 devices.,exact,ordering_information,table,Ordering info
+TPS7A1650DGNR,What type of device is the TPS7A1650?,It is a low-dropout (LDO) linear voltage regulator.,exact,component_identification,text,From title and description
+TPS7A1650DGNR,What is the maximum input voltage supported by the device?,The device supports an input voltage up to 60 V.,exact,absolute_maximum_ratings,text,Highlighted in features and specs
+TPS7A1650DGNR,What is the maximum output current rating?,The maximum output current rating is 100 mA.,exact,electrical_limits,text,Feature list
+TPS7A1650DGNR,What is the typical quiescent current during operation?,The typical quiescent current is 5 µA.,exact,power_consumption,text,Feature list
+TPS7A1650DGNR,What is the quiescent current when the device is disabled?,The shutdown quiescent current is typically 1 µA.,exact,power_consumption,text,Feature list
+TPS7A1650DGNR,What output voltage options are available for fixed versions?,Fixed output voltages of 3.3 V and 5 V are available.,exact,configuration,text,Feature list
+TPS7A1650DGNR,What is the adjustable output voltage range?,The adjustable output voltage range is approximately 1.2 V to 18.5 V.,exact,configuration,table,Recommended operating conditions
+TPS7A1650DGNR,What package options are offered for this device?,The device is available in HVSSOP-8 and SON-8 PowerPAD™ packages.,exact,packaging,text,Device information section
+TPS7A1650DGNR,What is the operating junction temperature range?,The operating junction temperature range is −40°C to +125°C.,exact,thermal_specs,table,Recommended operating conditions
+TPS7A1650DGNR,What is the minimum input voltage required for operation?,The minimum input voltage is 3 V.,exact,operating_conditions,table,Recommended operating conditions
+TPS7A1650DGNR,What is the typical dropout voltage at 20 mA load?,The typical dropout voltage is about 60 mV at 20 mA.,exact,electrical_specs,table,Electrical characteristics
+TPS7A1650DGNR,What is the typical dropout voltage at 100 mA load?,"The typical dropout voltage is about 265 mV, with a maximum of 500 mV.",exact,electrical_specs,table,Electrical characteristics
+TPS7A1650DGNR,What protection features are included in the device?,The device includes current limit and thermal shutdown protection.,exact,protection_features,text,Feature list
+TPS7A1650DGNR,At what temperature does thermal shutdown typically occur?,Thermal shutdown typically occurs around 170°C junction temperature.,exact,thermal_protection,table,Electrical characteristics
+TPS7A1650DGNR,At what temperature does the device recover from thermal shutdown?,The device typically recovers at about 150°C junction temperature.,exact,thermal_protection,table,Electrical characteristics
+TPS7A1650DGNR,What is the enable pin used for?,The enable pin turns the regulator on or off based on input voltage level.,exact,functional_description,text,Enable pin description
+TPS7A1650DGNR,What happens to the output when the input voltage falls below UVLO?,The regulator shuts down until the input voltage recovers above the UVLO threshold.,exact,functional_behavior,text,Regulated output section
+TPS7A1650DGNR,What is the purpose of the power-good (PG) pin?,It provides an open-drain signal indicating whether the output voltage is within regulation.,exact,monitoring_features,text,Power-good description
+TPS7A1650DGNR,How is the power-good delay time configured?,The delay time is set using an external capacitor connected to the DELAY pin.,exact,timing_features,text,PG delay description
+TPS7A1650DGNR,How can the PG delay time be calculated?,tDELAY = (CDELAY × VREF) / IDELAY.,exact,timing_features,text,Explicit formula in datasheet
+TPS7A1650DGNR,What capacitor values are recommended for stable operation?,At least 0.1 µF on the input and 2.2 µF on the output are required.,exact,stability_requirements,text,Power supply recommendations
+TPS7A1650DGNR,What capacitor value does TI recommend to improve AC performance?,TI recommends using 10 µF ceramic capacitors on both input and output.,exact,stability_requirements,text,Design guidance
+TPS7A1650DGNR,How does quiescent current change with input voltage?,Quiescent current increases slightly as input voltage increases.,estimation,electrical_behavior,chart,From quiescent current vs VIN plots
+TPS7A1650DGNR,How does dropout voltage vary with output current?,Dropout voltage increases as output current increases.,estimation,electrical_behavior,chart,Dropout vs load current plot
+TPS7A1650DGNR,What applications is the TPS7A16 family intended for?,"Applications include battery-powered systems, automotive electronics, and power tools.",exact,application_context,text,Applications section
+TPS7A1650DGNR,Why is this device suitable for automotive applications?,It can tolerate high input voltages and load-dump transients up to 60 V.,exact,application_context,text,Automotive applications section
+TPS7A1650DGNR,Is the device RoHS compliant?,"Yes, the device is RoHS compliant and classified as “Green.”",exact,compliance,table,Package option addendum
+BSS169H6327XTSA1,What is the minimum drain-source cutoff current at 25°C?,The maximum drain-source cutoff current at 25°C is 0.1 µA.,exact,electrical_specs,table,From static characteristics
+BSS169H6327XTSA1,How does the drain-source cutoff current change at 125°C?,The cutoff current increases to a maximum of 10 µA at 125°C.,exact,thermal_behavior,table,Temperature-dependent leakage
+BSS169H6327XTSA1,What is the typical transconductance value and test current?,The typical transconductance is 0.20 S at ID = 0.15 A.,exact,electrical_specs,table,Requires matching value + condition
+BSS169H6327XTSA1,What is the typical gate plateau voltage?,The typical gate plateau voltage is −0.43 V.,exact,dynamic_characteristics,table,Negative value trips many models
+BSS169H6327XTSA1,What is the maximum reverse recovery charge of the body diode?,The maximum reverse recovery charge is 12.1 nC.,exact,body_diode,table,Needs correct column (max)
+BSS169H6327XTSA1,What reverse recovery test conditions are specified?,"VR = 50 V, IF = 0.12 A, and di/dt = 100 A/µs.",exact,test_conditions,table,Multi-field extraction
+BSS169H6327XTSA1,What is the typical input capacitance value?,The typical input capacitance is 51 pF.,exact,dynamic_characteristics,table,Ciss
+BSS169H6327XTSA1,What is the maximum reverse transfer capacitance?,The maximum reverse transfer capacitance is 7 pF.,exact,dynamic_characteristics,table,Crss max
+BSS169H6327XTSA1,How does RDS(on) change as junction temperature increases?,RDS(on) increases as junction temperature increases.,estimation,thermal_behavior,chart,From RDS(on) vs Tj plot
+BSS169H6327XTSA1,How does gate threshold voltage vary with temperature?,The gate threshold voltage becomes more negative as temperature increases.,estimation,thermal_behavior,chart,From VGS(th) vs Tj plot
+BSS169H6327XTSA1,Which VGS(th) band corresponds to the most negative threshold voltages?,Band N corresponds to the most negative thresholds (−2.6 V to −2.4 V).,exact,binning,table,Sorted band table
+BSS169H6327XTSA1,Can a specific VGS(th) band be ordered separately?,"No, a specific threshold voltage band cannot be ordered separately.",exact,ordering_constraints,text,Footnote under band table
+BSS169H6327XTSA1,What is the maximum continuous diode forward current?,The maximum continuous diode forward current is 0.19 A.,exact,body_diode,table,Reverse diode section
+BSS169H6327XTSA1,What is the typical diode forward voltage at 25°C?,The typical diode forward voltage is 0.82 V at IF = 0.19 A.,exact,body_diode,table,Body diode characteristics
+BSS169H6327XTSA1,How does diode forward voltage change with temperature?,The diode forward voltage decreases as temperature increases.,estimation,thermal_behavior,chart,From IF–VSD curves
+BSS169H6327XTSA1,What limits the safe operating area at high VDS?,The safe operating area is limited by on-state resistance.,exact,safe_operating_area,chart,SOA annotation
+BSS169H6327XTSA1,How does maximum drain current change with ambient temperature?,Maximum drain current decreases as ambient temperature increases.,estimation,thermal_behavior,chart,ID vs TA plot
+BSS169H6327XTSA1,What is the maximum transient thermal impedance behavior at short pulses?,Thermal impedance decreases significantly for short pulse durations.,estimation,thermal_behavior,chart,ZthJA vs pulse width
+BSS169H6327XTSA1,Which pin is designated as the drain in the PG-SOT-23 package?,Pin 3 is the drain.,exact,pinout,text,Package diagram
+BSS169H6327XTSA1,Which pin is the gate?,Pin 1 is the gate.,exact,pinout,text,Package diagram
+BSS169H6327XTSA1,What mounting footprint condition is used for the specified RθJA?,The RθJA is specified for a minimal footprint.,exact,thermal_specs,table,Thermal characteristics
+BSS169H6327XTSA1,What climatic category does the device conform to?,The device conforms to IEC climatic category 55/150/56.,exact,environmental_specs,table,Environmental rating
+BSS169H6327XTSA1,Is the device suitable for fast dv/dt switching applications?,"Yes, it is dv/dt rated and suitable for fast switching.",exact,application_context,text,Feature list
+BSS169H6327XTSA1,Does gate charge increase linearly with gate voltage?,"No, gate charge increases nonlinearly due to the plateau region.",estimation,electrical_behavior,chart,From Qg vs VGS plot
+BSS169H6327XTSA1,Is the BSS169 optimized for low-current or high-current applications?,It is optimized for low-current applications.,estimation,application_context,mixed,Inferred from ID and RDS(on)

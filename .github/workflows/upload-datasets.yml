@@ -7,8 +7,8 @@ on:
       - 'datasets/schematic_rule_check/**'
   workflow_dispatch:
     inputs:
-      board_id:
-        description: 'Board directory to upload (or "all")'
+      file:
+        description: 'CSV filename to upload (or "all")'
         required: true
         default: 'all'
       dry_run:
@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Need previous commit for --changed detection
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -53,13 +53,12 @@ jobs:
           LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
         run: |
           ARGS=""
-          if [ "${{ inputs.board_id }}" = "all" ]; then
+          if [ "${{ inputs.file }}" = "all" ]; then
             ARGS="--all"
           else
-            ARGS="--board ${{ inputs.board_id }}"
+            ARGS="--file ${{ inputs.file }}"
           fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
           npx tsx scripts/upload-datasets.ts $ARGS
-

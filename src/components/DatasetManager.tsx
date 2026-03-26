@@ -7,11 +7,8 @@ import './DatasetManager.css'
 // ---------------------------------------------------------------------------
 
 interface ManifestEntry {
-  boardId: string
-  directory: string
-  datasetNamePrefix: string
-  description?: string
-  author?: string
+  filename: string
+  prefix: string
 }
 
 interface Manifest {
@@ -132,7 +129,7 @@ async function triggerWorkflowDispatch(
   pat: string,
   owner: string,
   repo: string,
-  boardId: string,
+  filename: string,
   dryRun: boolean = false,
 ): Promise<void> {
   const res = await githubRequest(
@@ -142,7 +139,7 @@ async function triggerWorkflowDispatch(
     {
       ref: 'main',
       inputs: {
-        board_id: boardId,
+        file: filename,
         dry_run: String(dryRun),
       },
     },
@@ -183,9 +180,6 @@ export default function DatasetManager() {
 
   // Upload form
   const [file, setFile] = useState<File | null>(null)
-  const [boardId, setBoardId] = useState('')
-  const [datasetPrefix, setDatasetPrefix] = useState('')
-  const [description, setDescription] = useState('')
   const [dragActive, setDragActive] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -255,6 +249,11 @@ export default function DatasetManager() {
     setPreviewError(null)
     setStatusMsg(null)
 
+    if (!f.name.startsWith('SRC_')) {
+      setPreviewError('Filename must start with SRC_')
+      return
+    }
+
     f.text().then(text => {
       try {
         const results = convertAll(text)
@@ -263,7 +262,7 @@ export default function DatasetManager() {
         setPreviewError(err instanceof Error ? err.message : 'Preview failed')
       }
     })
-  }, [boardId])
+  }, [])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -290,8 +289,8 @@ export default function DatasetManager() {
       setStatusMsg({ type: 'error', text: 'GitHub repo not configured (VITE_GITHUB_OWNER / VITE_GITHUB_REPO)' })
       return
     }
-    if (!file || !preview || !boardId.trim() || !datasetPrefix.trim()) {
-      setStatusMsg({ type: 'error', text: 'Please fill in all required fields and ensure the CSV passes validation' })
+    if (!file || !preview) {
+      setStatusMsg({ type: 'error', text: 'Please upload a valid CSV file that passes validation' })
       return
     }
 
@@ -300,20 +299,11 @@ export default function DatasetManager() {
 
     try {
       const csvContent = await file.text()
-      const metadata: Record<string, unknown> = {
-        boardId: boardId.trim(),
-        datasetNamePrefix: datasetPrefix.trim(),
-        description: description.trim() || undefined,
-        createdAt: new Date().toISOString(),
-      }
-
-      const dirName = boardId.trim()
       const files = [
-        { path: `datasets/schematic_rule_check/${dirName}/src-eval.csv`, content: csvContent },
-        { path: `datasets/schematic_rule_check/${dirName}/metadata.json`, content: JSON.stringify(metadata, null, 2) + '\n' },
+        { path: `datasets/schematic_rule_check/${file.name}`, content: csvContent },
       ]
 
-      await commitFiles(pat, owner, repo, files, `feat: add SRC eval dataset for board ${boardId.trim()}`)
+      await commitFiles(pat, owner, repo, files, `feat: add SRC eval dataset ${file.name}`)
 
       setStatusMsg({ type: 'info', text: 'Committed. Upload workflow triggered automatically. Polling for status...' })
 
@@ -435,20 +425,18 @@ export default function DatasetManager() {
             ) : (
               <div className="dm-dataset-list">
                 {manifest.datasets.map(entry => (
-                  <div key={entry.directory} className="dm-dataset-row">
+                  <div key={entry.filename} className="dm-dataset-row">
                     <div className="dm-dataset-info">
-                      <div className="dm-dataset-title">{entry.boardId}</div>
+                      <div className="dm-dataset-title">{entry.prefix}</div>
                       <div className="dm-dataset-meta">
-                        <span>Prefix: {entry.datasetNamePrefix}</span>
-                        {entry.description && <span>{entry.description}</span>}
-                        {entry.author && <span>by {entry.author}</span>}
+                        <span>{entry.filename}</span>
                       </div>
                     </div>
                     <div className="dm-dataset-status">
                       {patValid && (
                         <button
                           className="dm-btn dm-btn-secondary"
-                          onClick={() => handleReUpload(entry.directory)}
+                          onClick={() => handleReUpload(entry.filename)}
                         >
                           Re-upload
                         </button>
@@ -494,39 +482,6 @@ export default function DatasetManager() {
                 />
               </div>
 
-              {/* Board ID */}
-              <div className="dm-form-group">
-                <label>Board ID <span className="required">*</span></label>
-                <input
-                  type="text"
-                  value={boardId}
-                  onChange={e => setBoardId(e.target.value)}
-                  placeholder="e.g. 139-4947"
-                />
-              </div>
-
-              {/* Dataset Name Prefix */}
-              <div className="dm-form-group">
-                <label>Dataset Name Prefix <span className="required">*</span></label>
-                <input
-                  type="text"
-                  value={datasetPrefix}
-                  onChange={e => setDatasetPrefix(e.target.value)}
-                  placeholder="e.g. tida-global-rules"
-                />
-              </div>
-
-              {/* Description */}
-              <div className="dm-form-group">
-                <label>Description</label>
-                <input
-                  type="text"
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                  placeholder="e.g. Global rules for TIDA-010933 power supply"
-                />
-              </div>
-
               {/* Preview */}
               {previewError && <div className="dm-status-msg error">{previewError}</div>}
               {preview && (
@@ -536,7 +491,7 @@ export default function DatasetManager() {
                     {preview.map(ds => (
                       <div key={ds.name} className="dm-preview-card">
                         <div className="dm-preview-card-title">
-                          {ds.name} {'\u2192'} {datasetPrefix}-{ds.name}
+                          {ds.name} {'\u2192'} {file ? file.name.replace(/\.csv$/, '') : ''}-{ds.name}
                         </div>
                         <div className="dm-preview-card-count">{ds.rows.length} items</div>
                       </div>
@@ -550,7 +505,7 @@ export default function DatasetManager() {
                 <button
                   className="dm-submit-btn"
                   onClick={handleSubmit}
-                  disabled={submitting || !preview || !boardId.trim() || !datasetPrefix.trim() || !patValid}
+                  disabled={submitting || !preview || !patValid}
                 >
                   {submitting ? 'Committing...' : 'Commit & Upload'}
                 </button>

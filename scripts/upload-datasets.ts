@@ -2,32 +2,22 @@
 /**
  * SRC Eval Dataset Upload Script
  *
- * Reads SRC eval dataset CSVs from datasets/schematic_rule_check/{boardId}/, converts them using
- * the shared srcDatasetConverters, and uploads to Langfuse via API.
+ * Reads SRC eval CSV files from datasets/schematic_rule_check/, converts them
+ * using srcDatasetConverters, and uploads to Langfuse via API.
+ *
+ * The CSV filename (minus .csv) is used as the Langfuse dataset name prefix.
+ * e.g. SRC_global_rules_tida.csv -> SRC_global_rules_tida-rule, etc.
  *
  * Usage:
- *   npx tsx scripts/upload-datasets.ts --board 139-4947
+ *   npx tsx scripts/upload-datasets.ts --file SRC_global_rules_tida.csv
  *   npx tsx scripts/upload-datasets.ts --all
- *   npx tsx scripts/upload-datasets.ts --board 139-4947 --dry-run
- *   npx tsx scripts/upload-datasets.ts --changed   # only boards changed in last commit
+ *   npx tsx scripts/upload-datasets.ts --changed
+ *   npx tsx scripts/upload-datasets.ts --all --dry-run
  */
 
 import fs from 'fs'
 import path from 'path'
 import { convertAll, DatasetOutput } from '../src/converters/srcDatasetConverters.js'
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-interface Metadata {
-  boardId: string
-  datasetNamePrefix: string
-  description?: string
-  author?: string
-  createdAt?: string
-}
-
 
 // ---------------------------------------------------------------------------
 // Config
@@ -138,48 +128,31 @@ async function clearDatasetItems(datasetName: string): Promise<number> {
 // Core logic
 // ---------------------------------------------------------------------------
 
-function listBoardDirs(): string[] {
+function listCsvFiles(): string[] {
   if (!fs.existsSync(DATASETS_DIR)) return []
-  return fs.readdirSync(DATASETS_DIR).filter(name => {
-    const dir = path.join(DATASETS_DIR, name)
-    return fs.statSync(dir).isDirectory() && fs.existsSync(path.join(dir, 'metadata.json'))
-  })
+  return fs.readdirSync(DATASETS_DIR).filter(name => name.endsWith('.csv'))
 }
 
-function readMetadata(boardDir: string): Metadata {
-  const metaPath = path.join(DATASETS_DIR, boardDir, 'metadata.json')
-  return JSON.parse(fs.readFileSync(metaPath, 'utf-8'))
+function getPrefix(csvFilename: string): string {
+  return csvFilename.replace(/\.csv$/, '')
 }
 
-function readCsv(boardDir: string): string {
-  const csvPath = path.join(DATASETS_DIR, boardDir, 'src-eval.csv')
-  if (!fs.existsSync(csvPath)) {
-    throw new Error(`CSV not found: ${csvPath}`)
-  }
-  return fs.readFileSync(csvPath, 'utf-8')
-}
+async function processFile(csvFilename: string, dryRun: boolean): Promise<void> {
+  const prefix = getPrefix(csvFilename)
+  const csvPath = path.join(DATASETS_DIR, csvFilename)
+  const csvText = fs.readFileSync(csvPath, 'utf-8')
 
-function getDatasetName(metadata: Metadata, output: DatasetOutput): string {
-  return `${metadata.datasetNamePrefix}-${output.name}`
-}
-
-async function processBoard(boardDir: string, dryRun: boolean): Promise<void> {
-  const metadata = readMetadata(boardDir)
-  const csvText = readCsv(boardDir)
-
-  console.log(`\n--- Board: ${metadata.boardId} (${boardDir}) ---`)
-  console.log(`  Prefix: ${metadata.datasetNamePrefix}`)
+  console.log(`\n--- ${csvFilename} (prefix: ${prefix}) ---`)
 
   const outputs = convertAll(csvText)
 
   for (const output of outputs) {
-    const datasetName = getDatasetName(metadata, output)
+    const datasetName = `${prefix}-${output.name}`
     console.log(`  [${output.name}] ${output.rows.length} items -> "${datasetName}"`)
 
     if (!dryRun) {
       await createDataset(datasetName)
 
-      // Clear existing items before re-uploading (Langfuse creates a new version)
       const deletedCount = await clearDatasetItems(datasetName)
       if (deletedCount > 0) {
         console.log(`    -> cleared ${deletedCount} existing items`)
@@ -216,8 +189,8 @@ async function main() {
   const dryRun = args.includes('--dry-run')
   const all = args.includes('--all')
   const changed = args.includes('--changed')
-  const boardIdx = args.indexOf('--board')
-  const boardArg = boardIdx !== -1 ? args[boardIdx + 1] : null
+  const fileIdx = args.indexOf('--file')
+  const fileArg = fileIdx !== -1 ? args[fileIdx + 1] : null
 
   // Load .env if present
   const envPath = path.resolve(import.meta.dirname || __dirname, '..', '.env')
@@ -230,7 +203,6 @@ async function main() {
       if (eqIdx === -1) continue
       const key = trimmed.slice(0, eqIdx).trim()
       let value = trimmed.slice(eqIdx + 1).trim()
-      // Strip surrounding quotes
       if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
         value = value.slice(1, -1)
       }
@@ -250,53 +222,46 @@ async function main() {
     console.log('[DRY RUN] No uploads will be performed.\n')
   }
 
-  let boardDirs: string[]
+  let csvFiles: string[]
 
-  if (boardArg) {
-    // Single board
-    if (!fs.existsSync(path.join(DATASETS_DIR, boardArg, 'metadata.json'))) {
-      console.error(`Error: Board directory not found: datasets/schematic_rule_check/${boardArg}/metadata.json`)
+  if (fileArg) {
+    if (!fs.existsSync(path.join(DATASETS_DIR, fileArg))) {
+      console.error(`Error: File not found: datasets/schematic_rule_check/${fileArg}`)
       process.exit(1)
     }
-    boardDirs = [boardArg]
+    csvFiles = [fileArg]
   } else if (changed) {
-    // Detect changed boards from git
     const { execSync } = await import('child_process')
     try {
       const diffOutput = execSync('git diff --name-only HEAD~1 HEAD -- datasets/schematic_rule_check/', { encoding: 'utf-8' })
-      const changedDirs = new Set<string>()
+      const changedFiles = new Set<string>()
       for (const file of diffOutput.trim().split('\n')) {
         if (!file) continue
-        // Extract board dir: datasets/schematic_rule_check/{boardDir}/...
-        const parts = file.split('/')
-        if (parts.length >= 3 && parts[0] === 'datasets' && parts[1] === 'schematic_rule_check') {
-          const boardDir = parts[2]
-          if (fs.existsSync(path.join(DATASETS_DIR, boardDir, 'metadata.json'))) {
-            changedDirs.add(boardDir)
-          }
+        const basename = path.basename(file)
+        if (basename.endsWith('.csv') && fs.existsSync(path.join(DATASETS_DIR, basename))) {
+          changedFiles.add(basename)
         }
       }
-      boardDirs = [...changedDirs]
-      if (boardDirs.length === 0) {
-        console.log('No changed board directories detected.')
-        updateManifest()
+      csvFiles = [...changedFiles]
+      if (csvFiles.length === 0) {
+        console.log('No changed CSV files detected.')
         return
       }
-      console.log(`Detected ${boardDirs.length} changed board(s): ${boardDirs.join(', ')}`)
+      console.log(`Detected ${csvFiles.length} changed file(s): ${csvFiles.join(', ')}`)
     } catch {
-      console.error('Warning: Could not detect changed files from git. Processing all boards.')
-      boardDirs = listBoardDirs()
+      console.error('Warning: Could not detect changed files from git. Processing all.')
+      csvFiles = listCsvFiles()
     }
   } else if (all) {
-    boardDirs = listBoardDirs()
-    if (boardDirs.length === 0) {
-      console.log('No board directories found in datasets/schematic_rule_check/')
+    csvFiles = listCsvFiles()
+    if (csvFiles.length === 0) {
+      console.log('No CSV files found in datasets/schematic_rule_check/')
       return
     }
-    console.log(`Processing all ${boardDirs.length} board(s): ${boardDirs.join(', ')}`)
+    console.log(`Processing ${csvFiles.length} file(s): ${csvFiles.join(', ')}`)
   } else {
     console.log(`Usage:
-  npx tsx scripts/upload-datasets.ts --board <board-dir>
+  npx tsx scripts/upload-datasets.ts --file SRC_example.csv
   npx tsx scripts/upload-datasets.ts --all
   npx tsx scripts/upload-datasets.ts --changed
 
@@ -306,17 +271,17 @@ Options:
   }
 
   let hasErrors = false
-  for (const dir of boardDirs) {
+  for (const file of csvFiles) {
     try {
-      await processBoard(dir, dryRun)
+      await processFile(file, dryRun)
     } catch (err) {
       hasErrors = true
-      console.error(`\nERROR processing ${dir}:`, err instanceof Error ? err.message : err)
+      console.error(`\nERROR processing ${file}:`, err instanceof Error ? err.message : err)
     }
   }
 
   if (hasErrors) {
-    console.error('\nSome boards failed. Check output above.')
+    console.error('\nSome files failed. Check output above.')
     process.exit(1)
   }
 

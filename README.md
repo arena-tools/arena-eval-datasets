@@ -11,59 +11,39 @@ cp .env.example .env  # fill in your Langfuse credentials
 
 ## Adding a dataset
 
-1. Create a directory under `datasets/schematic_rule_check/{board-id}/`
-2. Add two files:
-   - `src-eval.csv` — the source SRC evaluation CSV
-   - `metadata.json` — board configuration
+1. Name your CSV file starting with `SRC_` (e.g. `SRC_global_rules_tida.csv`)
+2. Place it in `datasets/schematic_rule_check/`
+3. Commit and push to `main` — the GitHub Actions workflow auto-uploads to Langfuse
 
-### metadata.json format
-
-```json
-{
-  "boardId": "139-4947",
-  "datasetNamePrefix": "schematic_rule_checks_139-4947",
-  "description": "SRC eval for board 139-4947",
-  "author": "your-name",
-  "mode": "create_new"
-}
-```
-
-**mode** options:
-- `create_new` — creates new Langfuse datasets with prefixed names
-- `add_to_existing` — appends items to existing datasets (requires `existingDatasetNames` map)
-
-3. Commit and push to `main` — the GitHub Actions workflow auto-uploads to Langfuse.
+The filename (minus `.csv`) becomes the Langfuse dataset name prefix. For example, `SRC_global_rules_tida.csv` creates:
+- `SRC_global_rules_tida-rule`
+- `SRC_global_rules_tida-fanout`
+- `SRC_global_rules_tida-e2e`
+- `SRC_global_rules_tida-explainability`
 
 ## Manual upload
 
 ```bash
-# Single board
-npm run upload -- --board 139-4947
+# Single file
+npx tsx scripts/upload-datasets.ts --file SRC_global_rules_tida.csv
 
-# All boards
-npm run upload:all
+# All files
+npx tsx scripts/upload-datasets.ts --all
 
 # Preview without uploading
-npm run upload:dry-run
-
-# Only boards changed in last commit
-npm run upload:changed
+npx tsx scripts/upload-datasets.ts --all --dry-run
 ```
-
-## What gets created
-
-Each SRC eval CSV is converted into 4 Langfuse datasets:
-
-| Dataset | Description |
-|---------|-------------|
-| `{prefix}-rule` | Full rule compliance with subrule elements |
-| `{prefix}-fanout` | Element verification and expansion |
-| `{prefix}-e2e` | Simple end-to-end rule evaluation |
-| `{prefix}-explainability` | Element-level explainability analysis |
 
 ## Required CSV columns
 
 `Board Name`, `Tab`, `Rule Number`, `Row Index`, `Requirement`, `Element Type`, `Element ID`, `Result`, `Explainability`
+
+## CI validation
+
+PRs that add or modify CSV files in `datasets/schematic_rule_check/` are validated:
+- Filename must start with `SRC_`
+- CSV must have all required columns
+- CSV must convert successfully into all 4 dataset formats
 
 ## GitHub Actions secrets
 

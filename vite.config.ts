@@ -5,23 +5,14 @@ import path from 'path'
 
 const DATASETS_DIR = path.join(__dirname, 'datasets', 'schematic_rule_check')
 
-/** Scan board directories and build a manifest from their metadata.json files */
+/** Scan for CSV files and build a manifest */
 function buildManifest() {
   if (!fs.existsSync(DATASETS_DIR)) return { datasets: [] }
-  const dirs = fs.readdirSync(DATASETS_DIR).filter(name => {
-    const dir = path.join(DATASETS_DIR, name)
-    return fs.statSync(dir).isDirectory() && fs.existsSync(path.join(dir, 'metadata.json'))
-  })
-  const datasets = dirs.map(dir => {
-    const meta = JSON.parse(fs.readFileSync(path.join(DATASETS_DIR, dir, 'metadata.json'), 'utf-8'))
-    return {
-      boardId: meta.boardId,
-      directory: dir,
-      datasetNamePrefix: meta.datasetNamePrefix,
-      description: meta.description,
-      author: meta.author,
-    }
-  })
+  const files = fs.readdirSync(DATASETS_DIR).filter(name => name.endsWith('.csv'))
+  const datasets = files.map(file => ({
+    filename: file,
+    prefix: file.replace(/\.csv$/, ''),
+  }))
   return { datasets }
 }
 
@@ -37,7 +28,6 @@ export default defineConfig({
         fs.writeFileSync(path.join(destDir, 'manifest.json'), JSON.stringify(manifest, null, 2))
       },
       configureServer(server) {
-        // Serve a live-generated manifest during dev
         server.middlewares.use('/datasets/schematic_rule_check/manifest.json', (_req, res) => {
           const manifest = buildManifest()
           res.setHeader('Content-Type', 'application/json')

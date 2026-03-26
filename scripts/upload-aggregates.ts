@@ -22,9 +22,9 @@ interface AggregateDefinition {
 }
 
 const ROOT_DIR = path.resolve(import.meta.dirname || __dirname, '..')
-const AGGREGATES_PATH = path.join(ROOT_DIR, 'datasets', 'aggregates.json')
-const SRC_DIR = path.join(ROOT_DIR, 'datasets', 'schematic_rule_check')
-const DATASHEET_DIR = path.join(ROOT_DIR, 'datasets', 'datasheet_lookup')
+const AGGREGATES_PATH = process.env.AGGREGATES_PATH || path.join(ROOT_DIR, 'datasets', 'aggregates.json')
+const SRC_DIR = process.env.SRC_DATASETS_DIR || path.join(ROOT_DIR, 'datasets', 'schematic_rule_check')
+const DATASHEET_DIR = process.env.DATASHEET_DATASETS_DIR || path.join(ROOT_DIR, 'datasets', 'datasheet_lookup')
 
 function loadAggregates(): AggregateDefinition[] {
   if (!fs.existsSync(AGGREGATES_PATH)) return []

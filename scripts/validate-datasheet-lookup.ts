@@ -12,7 +12,8 @@ import path from 'path'
 import { convertDatasheetLookup } from '../source/converters/datasheetLookupConverters.js'
 import { listCsvFiles, getChangedCsvFilesForPR } from './lib/git.js'
 
-const DATASETS_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'datasheet_lookup')
+const DEFAULT_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'datasheet_lookup')
+const DATASETS_DIR = process.env.DATASHEET_DATASETS_DIR || DEFAULT_DIR
 
 async function main() {
   const changed = process.argv.includes('--changed')

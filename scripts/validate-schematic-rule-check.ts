@@ -12,7 +12,8 @@ import path from 'path'
 import { convertAll } from '../source/converters/srcDatasetConverters.js'
 import { listCsvFiles, getChangedCsvFilesForPR } from './lib/git.js'
 
-const DATASETS_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'schematic_rule_check')
+const DEFAULT_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'schematic_rule_check')
+const DATASETS_DIR = process.env.SRC_DATASETS_DIR || DEFAULT_DIR
 
 async function main() {
   const changed = process.argv.includes('--changed')

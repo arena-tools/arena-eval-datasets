@@ -1,0 +1,165 @@
+mpn,question,answer,answer_accuracy,question_category,notes,q_modality
+LNJ337W83RA,What is the relative luminuous intensity at 80 degrees C,Relative luminous intensity (%) decreases from ~150% to ~50% as ambient temperature increases from -30°C to 90°C,estimation,chart,,
+LNJ337W83RA,What is the storage temperature rating,Storage temperature Tstg -40 to +100 °C,exact,table,,
+LNJ337W83RA,What is the spectral half band width,"For IF = 5 mA, the spectral half band width is 20nm",exact,table,,
+LNJ337W83RA,What is the dominant emission wavelength,"Min: 566, Typ: 572, Max: 576 nm",exact,table,,
+LNJ337W83RA,What is the relative luminuous intensity at 550nm,~5%,exact,chart,Failed to answer in individual testing,
+LNJ337W83RA,What is the peak emission wavelength,575 nm,exact,table,,
+LNJ337W83RA,What is the forward current at 60 degrees C,10 mA,exact,chart,“Current must be derated from ~20 mA at room temperature to ~5 mA at 90°C”,
+LNJ337W83RA,What is the forward current at forward voltage of 1.9,2 mA,exact,chart,,
+LNJ337W83RA,Tell me about the directive characteristics,"Relatively wide beam angle +/-60-70 degrees, with a maximum intensity at 0 degrees (on axis)",estimation,chart,Proof that the polar plot is at least being read,
+BZX84C68LT1G,What is the total power dissipation on the FR-5 board,250 mW,exact,text,,
+BSS169H6327XTSA1,What is the total power dissipation when the ambient temperature (TA) is 100 degrees C,100 W,exact,chart,,
+BSS169H6327XTSA1,What is the drain current ID for ambient temperature (TA) 120 degrees C,0.14 A,exact,chart,,
+BSS169H6327XTSA1,What is the drain source breakdown voltage at 60 degrees C,105 V,exact,chart,,
+BSS169H6327XTSA1,What is the Max Gate to source charge Qgs?,0.16 nC,exact,table,,
+BSS169H6327XTSA1,At what ambient temperature (TA) does the drain current start to fall off dramatically,~100 C,estimation,chart,,
+BZX84C68LT1G,What is the Max VZ1 Below @ IZT1 = 2 mA,72,exact,table,,
+BZX84C68LT1G,What is the device marking,Y20,exact,table,,
+BZX84C68LT1G,What is the temperature coefficient at the Nominal Zener Voltage 7,3.5,estimation,chart,,
+BZX84C68LT1G,What is the max reverse leakage current,0.05 uA for 47.6 VR,exact,table,,
+SMAJ60A,What is the max breakdown voltage,73.7 VBR,exact,table,,
+SMAJ60A,What is the maximum clamping voltage,125.8,exact,table,,
+SMAJ60A,What is the peak forward surge current at 10 cycles at 60 Hz,20 Amps,estimation,chart,,
+SMAJ60A,At what temperature does the steady state power dissipation begin to drop,75 C,exact,chart,,
+SMAJ60A,What is the time to the Peak Pulse Current,10 microseconds,exact,chart,,
+GRM32ER71K475KE14L,At what frequency does the impedance reach its minimum value,The impedance reaches its minimum at approximately 5-10 MHz,estimation,chart,,
+GRM32ER71K475KE14L,At what frequency range is resistance at its lowest,"It is lowest in the hundreds of kHz to low MHz range, near the capacitor’s optimal operating region",estimation,chart,,
+GRM32ER71K475KE14L,How does resistance behave at very high frequencies above 1 GHz,The resistance increases sharply,exact,chart,,
+GRM32ER71K475KE14L,"According to the DC Bias Characteristics chart, how does capacitance change as DC bias voltage increases?",Capacitance decreases significantly as DC bias voltage increases,exact,chart,,
+GRM32ER71K475KE14L,How much capacitance loss occurs at 80 V DC Bias,Approximately 80-85% compared to its nominal value,estimation,chart,,
+GRM32ER71K475KE14L,Over what AC voltage range is the AC voltage characteristic measured,0 to 2 Vrms,exact,chart,,
+GRM32ER71K475KE14L,"At 2 Vrms, what is the approximate capacitance change rate",The capacitance increases by approximately +5%,estimation,chart,,
+TPS7A1650DGNR,"As input voltage increases, does quiescent current generally increase, decrease, or stay the same",Increase,exact,chart,,
+TPS7A1650DGNR,Which temperature curve shows the highest quiescent current,+125 C,exact,chart,,
+TPS7A1650DGNR,Is the shutdown current lower or higher than quiescent current,Lower,exact,chart,,
+TPS7A1650DGNR,Does shutdown current increase as input voltage increases,Yes,exact,chart,,
+TPS7A1650DGNR,"At high input voltage, which temperature shows the highest shutdown current",+125 C,exact,chart,,
+TPS7A1650DGNR,"As output current increases, what happens to ground current",It increases,exact,chart,,
+TPS7A1650DGNR,Is the relationship between output current and ground current roughly linear,Yes,exact,chart,,
+TPS7A1650DGNR,Does dropout voltage increase or decrease as output current increases,Increase,exact,chart,,
+TPS7A1650DGNR,Which temperature has the highest dropout voltage at a given output current,+125 C,exact,chart,,
+TPS7A1650DGNR,"At 0 mA output current, is the dropout voltage near zero or large",Near zero,exact,chart,,
+TPS7A1650DGNR,Does feedback voltage change significantly as input voltage increases,No,exact,chart,,
+TPS7A1650DGNR,Is the feedback voltage approximately constant across the input voltage range,Yes,exact,chart,,
+TPS7A1650DGNR,Which temperature shows the highest feedback voltage,-40 C,exact,chart,,
+TPS7A1650DGNR,Does output voltage change significantly as input voltage increases,No,exact,chart,,
+TPS7A1650DGNR,Is VOUT slightly higher or lower at −40°C compared to +125°C,Higher,exact,chart,,
+TPS7A1650DGNR,"As output current increases, does VOUT(NOM) change significantly",No,exact,chart,,
+TPS7A1650DGNR,Is the current limit closer to 200 mA or 50 mA,200 mA,exact,chart,,
+TPS7A1650DGNR,"As temperature increases, does the power-good threshold voltage increase or decrease",Increase,exact,chart,,
+TPS7A1650DGNR,Is the PG rising threshold higher or lower than the PG falling threshold,Higher,exact,chart,,
+TPS7A1650DGNR,"As temperature increases, does the enable threshold voltage increase or decrease",Decrease,exact,chart,,
+TPS7A1650DGNR,Is the OFF-to-ON threshold higher or lower than the ON-to-OFF threshold,Higher,exact,chart,,
+TPS7A1650DGNR,Does PSRR generally decrease as frequency increases,Yes,exact,chart,,
+TPS7A1650DGNR,Is PSRR higher at low frequencies or high frequencies,Low frequencies,exact,chart,,
+TPS7A1650DGNR,Is PSRR above 40 dB at frequencies below 100 Hz,Yes,exact,chart,,
+TPS7A1650DGNR,Does output noise density generally decrease as frequency increases,Yes,exact,chart,,
+TPS7A1650DGNR,Is noise density higher at 10 Hz or at 1 MHz,10 Hz,exact,chart,,
+TPS7A1650DGNR,Does the noise curve show a noticeable drop around the kHz range,Yes,exact,chart,,
+AD8429ARZ-R7,What is the sign of the input bias current across the plotted range of Common-mode voltage? Positive or negative?,Negative,exact,chart,,qualitative
+AD8429ARZ-R7,"As the common-mode voltage increases, does the input bias current magnitude increase or decrease?",Increase,exact,chart,,qualitative
+AD8429ARZ-R7,Is the input bias current relatively constant or strongly varying across the range?,Strongly varying,exact,chart,,qualitative
+AD8429ARZ-R7,What happens to positive PSRR as frequency increases?,It decreases,exact,chart,,qualitative
+AD8429ARZ-R7,Is PSRR higher at low frequencies or high frequencies,Low frequencies,exact,chart,,qualitative
+AD8429ARZ-R7,Which gain setting shows the highest PSRR,Gain = 1000,exact,chart,,qualitative
+AD8429ARZ-R7,"At a given frequency, is PSRR higher at higher gain or lower gain",Higher gain,exact,chart,,qualitative
+AD8429ARZ-R7,"At high frequencies, does PSRR drop below 60 dB for Gain = 1",Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"As frequency increases, does gain increase or decrease?",It decreases,exact,chart,,qualitative
+AD8429ARZ-R7,Which gain setting shows the highest low-frequency gain?,Gain = 1000,exact,chart,,qualitative
+AD8429ARZ-R7,Do all gain curves eventually roll off at high frequency,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"As frequency increases, does CMRR increase or decrease?",Decrease,exact,chart,,qualitative
+AD8429ARZ-R7,Is CMRR higher at low frequencies or high frequencies?,Low frequencies,exact,chart,,qualitative
+AD8429ARZ-R7,Which gain setting shows the highest CMRR at low frequency?,G = 1k,exact,chart,,qualitative
+AD8429ARZ-R7,"At high frequencies, do all gain curves converge?",Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"Compared to Figure 10, is CMRR generally lower with source imbalance?",Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"At low frequency, is CMRR higher for G = 1 or G = 1k?",G = 1k,exact,chart,,qualitative
+AD8429ARZ-R7,"As temperature increases from −40°C to +125°C, does input bias current increase or decrease?",Decrease,exact,chart,,qualitative
+AD8429ARZ-R7,Are the input bias currents positive or negative over most of the temperature range?,Negative,exact,chart,,qualitative
+AD8429ARZ-R7,Does input offset current vary significantly with temperature?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"As temperature increases, does CMRR increase or decrease?",Decrease,exact,chart,,qualitative
+AD8429ARZ-R7,Is CMRR highest at low temperature or high temperature?,Low temperature,exact,chart,,qualitative
+AD8429ARZ-R7,"As warm-up time increases, does the change in input offset voltage increase or decrease?",Decrease,exact,chart,,qualitative
+AD8429ARZ-R7,Is the largest change in input offset voltage observed at short or long warm-up times?,Short warm-up times,exact,chart,,qualitative
+AD8429ARZ-R7,"After several hundred seconds, does the offset voltage change approach zero?",Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"As temperature increases, does supply current increase or decrease?",Increase,exact,chart,,qualitative
+AD8429ARZ-R7,Is supply current lowest at low temperature or high temperature?,Low temperature,exact,chart,,qualitative
+AD8429ARZ-R7,Does the supply current change smoothly with temperature?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,What is the approximate CMRR (dB) at 10 Hz for G = 1?,~100 dB,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate CMRR (dB) at 10 Hz for G = 10?,~120 dB,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate CMRR (dB) at 10 Hz for G = 1k?,~140 dB,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate CMRR (dB) at 1 MHz for G = 1?,~40 dB,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate CMRR (dB) at 1 MHz for G = 1k?,~60 dB,estimation,chart,,quantitative
+AD8429ARZ-R7,"With 1 kΩ source imbalance, what is the approximate CMRR (dB) at 100 Hz for G = 1?",~100 dB,estimation,chart,,quantitative
+AD8429ARZ-R7,"With 1 kΩ source imbalance, what is the approximate CMRR (dB) at 1 MHz for G = 100?",~40 dB,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate input bias current (nA) at −40°C?,~30 nA,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate input bias current (nA) at 25°C?,~−5 nA,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate input bias current (nA) at 125°C?,~−10 nA,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate input offset current (nA) at 25°C?,~0.75 nA,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate CMRR (µV/V) at −40°C (G = 1)?,~+35 µV/V,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate CMRR (µV/V) at 25°C (G = 1)?,~0 µV/V,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate CMRR (µV/V) at 125°C (G = 1)?,~−45 µV/V,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate change in input offset voltage (µV) at 10 s warm-up time?,~10 µV,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate change in input offset voltage (µV) at 100 s warm-up time?,~1 µV,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate change in input offset voltage (µV) at 500 s warm-up time?,~0 µV,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate supply current (mA) at −40°C?,~5.8 mA,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate supply current (mA) at 25°C?,~6.8 mA,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate supply current (mA) at 125°C?,~8.1 mA,estimation,chart,,quantitative
+AD8429ARZ-R7,"As temperature increases, does the positive short-circuit current (Ishort+) increase or decrease?",Decrease,estimation,chart,,quantitative
+AD8429ARZ-R7,"As temperature increases, does the negative short-circuit current (Ishort−) increase or decrease?",Increase,estimation,chart,,quantitative
+AD8429ARZ-R7,Is the magnitude of short-circuit current larger at low temperature or high temperature?,Low temperature,estimation,chart,,quantitative
+AD8429ARZ-R7,"As supply voltage increases, do the input voltage limits change significantly?",No,estimation,chart,,quantitative
+AD8429ARZ-R7,Are the input voltage limit curves relatively flat versus supply voltage?,Yes,estimation,chart,,quantitative
+AD8429ARZ-R7,"As temperature increases, does the positive slew rate (+SR) generally increase or decrease at ±15 V?",Increase,estimation,chart,,quantitative
+AD8429ARZ-R7,"As temperature increases, does the negative slew rate (−SR) generally decrease after peaking?",Yes,estimation,chart,,quantitative
+AD8429ARZ-R7,Is the positive slew rate higher than the negative slew rate at high temperatures (±15 V)?,Yes,estimation,chart,,quantitative
+AD8429ARZ-R7,"At ±5 V supply, does the positive slew rate increase with temperature?",Yes,estimation,chart,,quantitative
+AD8429ARZ-R7,"At ±5 V supply, does the negative slew rate slightly decrease at high temperature?",Yes,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate positive output voltage swing (V) at 10 kΩ load and 25°C?,~+14.5 V,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate negative output voltage swing (V) at 10 kΩ load and 25°C?,~−14.5 V,estimation,chart,,quantitative
+AD8429ARZ-R7,"At 100 Ω load, what is the approximate positive output swing (V) at 25°C?",~+5 V,estimation,chart,,quantitative
+AD8429ARZ-R7,"At 100 Ω load, what is the approximate negative output swing (V) at 25°C?",~−5 V,estimation,chart,,quantitative
+AD8429ARZ-R7,At what load resistance does the output swing begin to saturate near the rails?,~1 kΩ,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the maximum gain nonlinearity (ppm) for G = 1000 near 0 V output?,~2 ppm,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the gain nonlinearity (ppm) at +10 V output for G = 1000?,~0 ppm,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the maximum gain nonlinearity (ppm) for G = 1 near mid-scale output?,~2 ppm,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the gain nonlinearity (ppm) at −10 V output for G = 1?,~0 ppm,estimation,chart,,quantitative
+AD8429ARZ-R7,"At 1 mA output current, what is the positive output swing limit (V) at 25°C?",~+1.3 V,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the RTI noise density (nV/√Hz) at 10 Hz for G = 1?,~100 nV/√Hz,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the RTI noise density (nV/√Hz) at 1 kHz for G = 1?,~40 nV/√Hz,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the RTI noise density (nV/√Hz) at 10 Hz for G = 10?,~10 nV/√Hz,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the RTI noise density (nV/√Hz) at 10 Hz for G = 1000?,~2 nV/√Hz,estimation,chart,,quantitative
+AD8429ARZ-R7,"As frequency increases, does current noise spectral density increase or decrease?",Decrease,estimation,chart,,qualitative
+AD8429ARZ-R7,Is current noise higher at low frequencies or high frequencies?,Low frequencies,estimation,chart,,qualitative
+AD8429ARZ-R7,Does the current noise curve flatten at higher frequencies?,Yes,estimation,chart,,qualitative
+AD8429ARZ-R7,Is the 0.1–10 Hz current noise waveform relatively stable over time?,Yes,estimation,chart,,qualitative
+AD8429ARZ-R7,"In the large-signal frequency response plot, does output voltage decrease at high frequency?",Yes,estimation,chart,,qualitative
+AD8429ARZ-R7,"As gain increases (G = 1 → 10 → 100), does settling time increase?",Yes,estimation,chart,,qualitative
+AD8429ARZ-R7,Is settling time longer to 0.001% than to 0.01%?,Yes,estimation,chart,,qualitative
+AD8429ARZ-R7,What is the approximate current noise spectral density at 1 Hz?,~12 pA/√Hz,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate current noise spectral density at 100 Hz?,~3 pA/√Hz,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the approximate current noise spectral density above 1 kHz?,~2 pA/√Hz,estimation,chart,,quantitative
+AD8429ARZ-R7,"At low frequency, what is the large-signal output voltage (Vp-p) for Vs = ±15 V?",~25 V,estimation,chart,,quantitative
+AD8429ARZ-R7,"At low frequency, what is the large-signal output voltage (Vp-p) for Vs = ±5 V?",~5 V,estimation,chart,,quantitative
+AD8429ARZ-R7,At approximately what frequency does the ±15 V output begin to roll off?,~200 kHz,estimation,chart,,quantitative
+AD8429ARZ-R7,What is the settling time to 0.01% for G = 1?,~750 ns,exact,chart,,quantitative
+AD8429ARZ-R7,What is the settling time to 0.001% for G = 1?,~872 ns,exact,chart,,quantitative
+AD8429ARZ-R7,What is the settling time to 0.01% for G = 10?,~640 ns,exact,chart,,quantitative
+AD8429ARZ-R7,What is the settling time to 0.001% for G = 10?,~896 ns,exact,chart,,quantitative
+AD8429ARZ-R7,What is the settling time to 0.01% for G = 100?,~840 ns,exact,chart,,quantitative
+AD8429ARZ-R7,"As step size increases, does settling time increase or decrease?",Increase,exact,chart,,qualitative
+AD8429ARZ-R7,Is the settling time to 0.001% longer than the settling time to 0.01% for all step sizes?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Does settling time scale roughly linearly with step size?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"At a fixed frequency, does harmonic distortion increase with heavier load?",Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Is second harmonic distortion generally higher than third harmonic distortion at the same gain?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Does harmonic distortion increase with frequency?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,"At G = 1000, is distortion higher at high frequencies than at low frequencies?",Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Does total harmonic distortion (THD) increase with gain?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Is THD lowest for G = 1 across most of the frequency range?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Do all distortion values remain below 1% across the plotted range?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Is distortion nearly flat at low frequencies before rising at higher frequencies?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,Are distortion curves smooth rather than noisy?,Yes,exact,chart,,qualitative
+AD8429ARZ-R7,What is the approximate settling time to 0.01% for a 10 V step?,~700 ns,exact,chart,,quantitative
+AD8429ARZ-R7,What is the approximate settling time to 0.001% for a 10 V step?,~900 ns,exact,chart,,quantitative
+AD8429ARZ-R7,"At a 20 V step, what is the approximate settling time to 0.01%?",~1200 ns,exact,chart,,quantitative
+AD8429ARZ-R7,"At 1 kHz, what is the approximate second harmonic distortion (%) for G = 1000 with no load?",~0.0002%,exact,chart,,quantitative

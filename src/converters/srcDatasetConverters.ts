@@ -110,7 +110,7 @@ export function createE2eDataset(rows: SrcRow[]): DatasetOutput {
   }
 
   return {
-    name: 'e2e',
+    name: 'E2E',
     description: `E2E eval dataset — ${outputRows.length} rules`,
     headers,
     rows: outputRows,
@@ -156,7 +156,7 @@ export function createFanoutDataset(rows: SrcRow[]): DatasetOutput {
   }
 
   return {
-    name: 'fanout',
+    name: 'FANOUT',
     description: `Fanout eval dataset — ${outputRows.length} rules`,
     headers,
     rows: outputRows,
@@ -206,7 +206,7 @@ export function createRuleDataset(rows: SrcRow[]): DatasetOutput {
   }
 
   return {
-    name: 'rule',
+    name: 'RULE',
     description: `Rule eval dataset — ${outputRows.length} rules`,
     headers,
     rows: outputRows,
@@ -291,7 +291,7 @@ export function createExplainabilityDataset(rows: SrcRow[]): DatasetOutput {
   }
 
   return {
-    name: 'explainability',
+    name: 'EXPLAINABILITY',
     description: `Explainability eval dataset — ${outputRows.length} items`,
     headers,
     rows: outputRows,

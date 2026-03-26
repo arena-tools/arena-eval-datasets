@@ -14,9 +14,9 @@ import path from 'path'
 import { convertDatasheetLookup } from '../source/converters/datasheetLookupConverters.js'
 import { getLangfuseConfig, createDataset, uploadDatasetItem, clearDatasetItems } from './lib/langfuse.js'
 import { listCsvFiles, getChangedCsvFiles } from './lib/git.js'
+import { DATASHEET_DIR } from './lib/paths.js'
 
-const DEFAULT_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'datasheet_lookup')
-const DATASETS_DIR = process.env.DATASHEET_DATASETS_DIR || DEFAULT_DIR
+const DATASETS_DIR = DATASHEET_DIR
 
 async function processFile(csvFilename: string, dryRun: boolean): Promise<void> {
   const prefix = csvFilename.replace(/\.csv$/, '')

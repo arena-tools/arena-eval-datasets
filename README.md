@@ -156,13 +156,7 @@ Set these in the repo settings:
 
 ## Using as a git submodule
 
-This repo can be used as a submodule in a private repo that has its own datasets and Langfuse instance (e.g., govcloud). The scripts accept environment variables to override the default dataset directories:
-
-| Env var | Default | Used by |
-|---------|---------|---------|
-| `SRC_DATASETS_DIR` | `datasets/schematic_rule_check/` | upload + validate SRC scripts |
-| `DATASHEET_DATASETS_DIR` | `datasets/datasheet_lookup/` | upload + validate datasheet scripts |
-| `AGGREGATES_PATH` | `datasets/aggregates.json` | upload aggregates script |
+This repo can be used as a submodule in a private repo that has its own datasets and Langfuse instance (e.g., govcloud). All scripts resolve paths from a single `DATASETS_ROOT` env var (defaults to `datasets/` relative to the scripts).
 
 Example private repo structure:
 
@@ -187,7 +181,7 @@ steps:
   - run: npm ci --prefix shared
   - run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
     env:
-      SRC_DATASETS_DIR: ${{ github.workspace }}/datasets/schematic_rule_check
+      DATASETS_ROOT: ${{ github.workspace }}/datasets
       LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
       LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
       LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}

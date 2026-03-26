@@ -14,9 +14,9 @@ import path from 'path'
 import { convertAll } from '../source/converters/srcDatasetConverters.js'
 import { getLangfuseConfig, createDataset, uploadDatasetItem, clearDatasetItems } from './lib/langfuse.js'
 import { listCsvFiles, getChangedCsvFiles } from './lib/git.js'
+import { SRC_DIR } from './lib/paths.js'
 
-const DEFAULT_DIR = path.resolve(import.meta.dirname || __dirname, '..', 'datasets', 'schematic_rule_check')
-const DATASETS_DIR = process.env.SRC_DATASETS_DIR || DEFAULT_DIR
+const DATASETS_DIR = SRC_DIR
 
 async function processFile(csvFilename: string, dryRun: boolean): Promise<void> {
   const prefix = csvFilename.replace(/\.csv$/, '')

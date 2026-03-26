@@ -156,33 +156,66 @@ Set these in the repo settings:
 
 ## Using as a git submodule
 
-This repo can be used as a submodule in a private repo that has its own datasets and Langfuse instance (e.g., govcloud). All scripts resolve paths from a single `DATASETS_ROOT` env var (defaults to `datasets/` relative to the scripts).
+This repo can be used as a submodule in a private repo that has its own datasets and a separate Langfuse instance (e.g., govcloud). The private repo gets:
+- Its own runner (connecting to govcloud network)
+- Its own Langfuse secrets
+- Its own private datasets
+- The ability to also upload the public datasets from this repo to its Langfuse instance
 
-Example private repo structure:
+All scripts resolve paths from a `DATASETS_ROOT` env var (defaults to `datasets/` relative to the scripts). Set it to point at whichever datasets folder you want to upload.
+
+### Private repo structure
 
 ```
-my-private-datasets/
-  shared/                              # git submodule -> arena-eval-datasets
-  datasets/
-    schematic_rule_check/SRC_board.csv
+arena-eval-datasets-govcloud/
+  shared/                                    # git submodule -> arena-eval-datasets
+    datasets/                                # public datasets (from submodule)
+    scripts/                                 # shared upload/validate scripts
+    source/                                  # shared converters
+  datasets/                                  # private govcloud datasets
+    schematic_rule_check/SRC_govcloud.csv
     datasheet_lookup/questions.csv
     aggregates.json
   .github/workflows/
     upload.yml
 ```
 
-Example workflow in the private repo:
+### Example workflow
+
+The private repo runs scripts from the submodule, uploading both public and private datasets to the govcloud Langfuse instance:
 
 ```yaml
-steps:
-  - uses: actions/checkout@v4
-    with:
-      submodules: true
-  - run: npm ci --prefix shared
-  - run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
-    env:
-      DATASETS_ROOT: ${{ github.workspace }}/datasets
-      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
-      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-      LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+jobs:
+  upload:
+    runs-on: self-hosted-govcloud
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci --prefix shared
+
+      # Upload public datasets (from submodule) to govcloud Langfuse
+      - name: Upload public SRC datasets
+        run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
+        env:
+          DATASETS_ROOT: ${{ github.workspace }}/shared/datasets
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+
+      # Upload private datasets to govcloud Langfuse
+      - name: Upload private SRC datasets
+        run: npx tsx shared/scripts/upload-schematic-rule-check.ts --all
+        env:
+          DATASETS_ROOT: ${{ github.workspace }}/datasets
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
 ```
+
+The same scripts, same conversion logic, different runner, different secrets, different Langfuse instance. The `DATASETS_ROOT` env var controls which datasets folder to read from.

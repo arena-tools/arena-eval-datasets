@@ -8,7 +8,9 @@
     "upload:datasheet": "tsx scripts/upload-datasheet-lookup.ts",
     "upload:aggregates": "tsx scripts/upload-aggregates.ts",
     "validate:src": "tsx scripts/validate-schematic-rule-check.ts",
-    "validate:datasheet": "tsx scripts/validate-datasheet-lookup.ts"
+    "validate:datasheet": "tsx scripts/validate-datasheet-lookup.ts",
+    "upload:tp": "tsx scripts/upload-test-planning.ts",
+    "validate:tp": "tsx scripts/validate-test-planning.ts"
   },
   "devDependencies": {
     "tsx": "^4.7.0",

@@ -51,8 +51,8 @@ export function convertTestPlanning(csvText: string, datasetName: string): TestP
     name: datasetName,
     rows: rows.map(row => {
       const state: Record<string, string> = {}
-      if (row.goal) state.goal = row.goal
-      if (row.procedure) state.procedure = row.procedure
+      if (row.goal) state.goal = row.goal.replace(/\\n/g, '\n')
+      if (row.procedure) state.procedure = row.procedure.replace(/\\n/g, '\n')
       const inputState = Object.keys(state).length > 0 ? state : null
 
       let selectedItems: string[]

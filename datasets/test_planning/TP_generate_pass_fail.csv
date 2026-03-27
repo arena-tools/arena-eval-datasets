@@ -1,74 +1,12 @@
 board_name,goal,procedure,selected_items,expected_output
-Battman,Verify temperature sensor reading,"Supply power to the functional block.
-Wait for power to stabilize.
-Set device to measure mode waiting for a start adc command.
-Connect a voltage of 1V to NTC and ground connections (JP2 pin 1 and 2).
-Send command to start temperature reading.
-Read temperature sensor 1.","[""U1""]","[""Includes criteria: temperature measurement voltage is equal to input voltage ±10mV""]"
-TIDM-01000,Verify ADC reading for 2-wire sensor,"Supply power to the functional block.
-Wait for power to stabilize.
-Connect a resistance of 50 ohms to the adc input.
-Read the data from the adc.
-Connect a resistance of 200 ohms to the adc input.
-Read the data from the adc.
-Connect a resistance of 350 ohms to the adc input.
-Read the data from the adc","[""U2""]","[""Includes criteria: data ready pin transitions to logic low when there is new data to read"", ""Includes criteria: all measured values are within 0.5% of input resistance""]"
-TIDA-01167,Verify overvoltage protection,"Supply power to the funcitonal block with an input voltage of 60V.
-Wait for power to stabilize.
-Connect an eload to the output and set to 500mA load.
-Measure output voltage.
-Increase the voltage to 75V.
-Wait for power to stabilize.
-Measure output voltage.
-Reduce input voltage to 60V.
-Wait for power to stabilize.
-Measure output voltage","[""U1""]","[""Includes criteria: When input voltage is 60V, output voltage is = 60V ± 0.1V"", ""Includes criteria: When the input voltage is 75V, output voltage is < 70V""]"
-TIDA-010954,Verify output voltage at a range of loads,"Supply power to the functional block.
-Wait for power to stabilize.
-Measure the output voltage with no load.
-Connect an eload to the output and set to nominal load (300mA).
-Measure the output voltage.
-Set the eload to max current (1A).
-Measure the output voltage.","[""U12""]","[""Includes criteria: output voltage is 5V ±1%""]"
-PMP22650,Verify esd protection,"Supply power to the functional block.
-Wait for power to stabilize.
-Inject a pulse 100V, lasting for 10us, between CANH_BUS and CANL_BUS through a resistance of 100 ohms.
-Measure voltage at connector.","[""U29""]","[""Includes criteria: voltage at the connector never rises above 40V""]"
-TIDA-010954,Verify undervoltage lockout operation,"Power on the functional block with an input voltage of 6V.
-Wait for power to stabilize.
-Measure the output voltage.
-Increase input voltage to 8V.
-Measure the output voltage.","[""U12""]","[""Includes criteria: output voltage is <0.5V when the input is 6V"", ""Includes criteria: output voltage is 5V ±1% when the input is 8V""]"
-STM,Verify accelerometer measurement,"Supply power to the functional block.
-Wait for power to stabilize.
-Place pcb on a flat surface with the accelerometer pointing up.
-Configure accelerometer range ±2g.
-Read acccelerometer data.","[""U3""]","[""Includes criteria: x and y measurements are 0g ±0.1"", ""Includes criteria: z measurement is 1g ±0.1""]"
-PMP22650,Verify CAN transmission,"Supply power to the functional block.
-Wait for power to stabilize.
-Inject a 1 MHz square wave from 0-3.3V on CAN_TX.
-Measure the differential voltage between CANH_BUS and CANL_BUS.","[""U29""]","[""Includes criteria: a differential square wave with minimum (recessive) voltage in the range [-50, +50] mV"", ""Includes criteria: a differential square wave with maximum (dominant) voltage in the range [1.5, 3.0] V, with CANH_BUS > CANL_BUS"", ""Includes criteria: rise and fall time of signals is <= 45ns"", ""Includes criteria: square wave frequency of 1MHz""]"
-Battman,Verify all individual cell voltages,"Supply power to the functional block.
-Wait for power to stabilize.
-Set device to measure mode waiting for a start adc command.
-Connect a voltage source of 3.6V between CELL0 and CELL1 (JP1 pins 1 and 2).
-Send command to start cell measurements.
-Read cell voltages.
-Repeat test with the power supply connected to each pair of adjacent cell inputs (i.e. CELL1 and CELL2, CELL2 and CELL3, ...).","[""U1""]","[""Includes criteria: powered cell voltage is 3.6V ±10mV"", ""Includes criteria: all other cell voltages are 0V±10mV""]"
-PMP22650,Verify output voltage at a range of input voltages,"Power on the functional block with low input voltage (7V).
-Wait for power to stabilize.
-Connect an eload to the output and set to nominal load (100mA).
-Measure the output voltage.
-Change the input voltage to nominal voltage (12V).
-Wait for power to stabilize
-Measure the output voltage.
-Change the input voltage to high voltage (17V).
-Wait for power to stabilize
-Measure the output voltage.","[""U7""]","[""Includes criteria: output voltage is 5V ±1%""]"
-PMP22650,Verify output voltage at a range of loads,"Supply power to the functional block.
-Wait for power to stabilize.
-Measure the output voltage with no load.
-Connect an eload to the output and set to nominal load (100mA).
-Measure the output voltage.
-Set the eload to max current (500mA).
-Measure the output voltage.","[""U7""]","[""Includes criteria: output voltage is 5V ±1%""]"
+Battman,Verify temperature sensor reading,Supply power to the functional block.\nWait for power to stabilize.\nSet device to measure mode waiting for a start adc command.\nConnect a voltage of 1V to NTC and ground connections (JP2 pin 1 and 2).\nSend command to start temperature reading.\nRead temperature sensor 1.,"[""U1""]","[""Includes criteria: temperature measurement voltage is equal to input voltage ±10mV""]"
+TIDM-01000,Verify ADC reading for 2-wire sensor,Supply power to the functional block.\nWait for power to stabilize.\nConnect a resistance of 50 ohms to the adc input.\nRead the data from the adc.\nConnect a resistance of 200 ohms to the adc input.\nRead the data from the adc.\nConnect a resistance of 350 ohms to the adc input.\nRead the data from the adc,"[""U2""]","[""Includes criteria: data ready pin transitions to logic low when there is new data to read"", ""Includes criteria: all measured values are within 0.5% of input resistance""]"
+TIDA-01167,Verify overvoltage protection,Supply power to the funcitonal block with an input voltage of 60V.\nWait for power to stabilize.\nConnect an eload to the output and set to 500mA load.\nMeasure output voltage.\nIncrease the voltage to 75V.\nWait for power to stabilize.\nMeasure output voltage.\nReduce input voltage to 60V.\nWait for power to stabilize.\nMeasure output voltage,"[""U1""]","[""Includes criteria: When input voltage is 60V, output voltage is = 60V ± 0.1V"", ""Includes criteria: When the input voltage is 75V, output voltage is < 70V""]"
+TIDA-010954,Verify output voltage at a range of loads,Supply power to the functional block.\nWait for power to stabilize.\nMeasure the output voltage with no load.\nConnect an eload to the output and set to nominal load (300mA).\nMeasure the output voltage.\nSet the eload to max current (1A).\nMeasure the output voltage.,"[""U12""]","[""Includes criteria: output voltage is 5V ±1%""]"
+PMP22650,Verify esd protection,Supply power to the functional block.\nWait for power to stabilize.\nInject a pulse 100V, lasting for 10us, between CANH_BUS and CANL_BUS through a resistance of 100 ohms.\nMeasure voltage at connector.,"[""U29""]","[""Includes criteria: voltage at the connector never rises above 40V""]"
+TIDA-010954,Verify undervoltage lockout operation,Power on the functional block with an input voltage of 6V.\nWait for power to stabilize.\nMeasure the output voltage.\nIncrease input voltage to 8V.\nMeasure the output voltage.,"[""U12""]","[""Includes criteria: output voltage is <0.5V when the input is 6V"", ""Includes criteria: output voltage is 5V ±1% when the input is 8V""]"
+STM,Verify accelerometer measurement,Supply power to the functional block.\nWait for power to stabilize.\nPlace pcb on a flat surface with the accelerometer pointing up.\nConfigure accelerometer range ±2g.\nRead acccelerometer data.,"[""U3""]","[""Includes criteria: x and y measurements are 0g ±0.1"", ""Includes criteria: z measurement is 1g ±0.1""]"
+PMP22650,Verify CAN transmission,Supply power to the functional block.\nWait for power to stabilize.\nInject a 1 MHz square wave from 0-3.3V on CAN_TX.\nMeasure the differential voltage between CANH_BUS and CANL_BUS.,"[""U29""]","[""Includes criteria: a differential square wave with minimum (recessive) voltage in the range [-50, +50] mV"", ""Includes criteria: a differential square wave with maximum (dominant) voltage in the range [1.5, 3.0] V, with CANH_BUS > CANL_BUS"", ""Includes criteria: rise and fall time of signals is <= 45ns"", ""Includes criteria: square wave frequency of 1MHz""]"
+Battman,Verify all individual cell voltages,Supply power to the functional block.\nWait for power to stabilize.\nSet device to measure mode waiting for a start adc command.\nConnect a voltage source of 3.6V between CELL0 and CELL1 (JP1 pins 1 and 2).\nSend command to start cell measurements.\nRead cell voltages.\nRepeat test with the power supply connected to each pair of adjacent cell inputs (i.e. CELL1 and CELL2, CELL2 and CELL3, ...).,"[""U1""]","[""Includes criteria: powered cell voltage is 3.6V ±10mV"", ""Includes criteria: all other cell voltages are 0V±10mV""]"
+PMP22650,Verify output voltage at a range of input voltages,Power on the functional block with low input voltage (7V).\nWait for power to stabilize.\nConnect an eload to the output and set to nominal load (100mA).\nMeasure the output voltage.\nChange the input voltage to nominal voltage (12V).\nWait for power to stabilize\nMeasure the output voltage.\nChange the input voltage to high voltage (17V).\nWait for power to stabilize\nMeasure the output voltage.,"[""U7""]","[""Includes criteria: output voltage is 5V ±1%""]"
+PMP22650,Verify output voltage at a range of loads,Supply power to the functional block.\nWait for power to stabilize.\nMeasure the output voltage with no load.\nConnect an eload to the output and set to nominal load (100mA).\nMeasure the output voltage.\nSet the eload to max current (500mA).\nMeasure the output voltage.,"[""U7""]","[""Includes criteria: output voltage is 5V ±1%""]"
